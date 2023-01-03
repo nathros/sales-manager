@@ -7,6 +7,7 @@ import java.util.Map;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
+import sales.manager.common.log.Log;
 import sales.manager.web.handlers.HTTPSRedirectHandler;
 import sales.manager.web.handlers.Handlers;
 
@@ -16,7 +17,7 @@ public class SimpleHttpServer {
 	public void Start(int port, boolean redirectOnly) {
 		try {
 			server = HttpServer.create(new InetSocketAddress(port), 0);
-			System.out.println("HTTP " + (redirectOnly ? "redirect " : "") + "server started at port: " + port);
+			Log.l.info("HTTP " + (redirectOnly ? "redirect " : "") + "server started at port: " + port);
 
 			if (redirectOnly) {
 				server.createContext("/", new HTTPSRedirectHandler());

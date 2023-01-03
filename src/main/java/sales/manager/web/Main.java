@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import sales.manager.common.Database;
+
 public class Main {
 	public static int portHTTP = 9000;
 	public static int portHTTPS = -1;
@@ -12,6 +14,8 @@ public class Main {
 	public static String storePass = null;
 	public static String keyPass = null;
 	public static String dbPath = "config/base.db";
+	public static String dbImportPath = "config/report/";
+	public static String stockPath = "config/stock.db";
 
 	public static final String HTTPPORT = "httpport";
 	public static final String HTTPSPORT = "httpsport";
@@ -26,6 +30,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		if (processArgs(args)) {
+			Database.init();
 			SimpleHttpServer httpServer = new SimpleHttpServer();
 			httpServer.Start(portHTTP, portHTTPS > 0);
 

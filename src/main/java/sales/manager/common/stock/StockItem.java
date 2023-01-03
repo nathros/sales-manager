@@ -14,7 +14,7 @@ public class StockItem {
 		itemName = "";
 		supplier = "";
 		price = Double.valueOf("0");
-		importFee = Double.valueOf("0");;
+		importFee = Double.valueOf("0");
 		purchaseDate = LocalDate.now();
 		receivedDate = LocalDate.now();
 	}

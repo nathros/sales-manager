@@ -20,8 +20,6 @@ public class SalesHandler extends BaseHandler {
 	public static DynamicHtml<BodyModel> view = DynamicHtml.view(SalesHandler::body);
 
 	static void body(DynamicHtml<BodyModel> view, BodyModel model) {
-		final String tapeId = model.getQueryNoNull("");
-
 		view
 			.div()
 				.p().text("SalesHandler").__()
