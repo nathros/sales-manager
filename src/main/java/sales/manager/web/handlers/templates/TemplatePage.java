@@ -6,18 +6,20 @@ import htmlflow.DynamicHtml;
 import sales.manager.web.Main;
 import sales.manager.web.handlers.AdminHandler;
 import sales.manager.web.handlers.BaseHandler;
-import sales.manager.web.handlers.files.FilesHandler;
+import sales.manager.web.handlers.analytics.AnalyticsHandler;
+import sales.manager.web.handlers.sales.SalesHandler;
 import sales.manager.web.handlers.sandpit.SandpitHandler;
+import sales.manager.web.handlers.stock.StockHandler;
 import sales.manager.web.handlers.templates.TemplateHead.TemplateHeadModel;
 import sales.manager.web.handlers.templates.models.BodyModel;
 
 public class TemplatePage {
 	public static enum SelectedPage {
 		Admin,
-		Tapes,
-		Files,
+		Analytics,
+		Sales,
+		Stock,
 		Sandpit,
-		Jobs,
 		Missing
 	}
 
@@ -69,9 +71,21 @@ public class TemplatePage {
 										.__()
 									.__()
 									.li()
-										.a().dynamic(a -> a.attrHref(FilesHandler.PATH)
-											.attrClass("icon-folder" + (model.page == SelectedPage.Files ? selected : ""))
-											.text("Files"))
+										.a().dynamic(a -> a.attrHref(AnalyticsHandler.PATH)
+											.attrClass("icon-folder" + (model.page == SelectedPage.Analytics ? selected : ""))
+											.text("Analytics"))
+										.__()
+									.__()
+									.li()
+										.a().dynamic(a -> a.attrHref(SalesHandler.PATH)
+											.attrClass("icon-folder" + (model.page == SelectedPage.Sales ? selected : ""))
+											.text("Sales"))
+										.__()
+									.__()
+									.li()
+										.a().dynamic(a -> a.attrHref(StockHandler.PATH)
+											.attrClass("icon-folder" + (model.page == SelectedPage.Stock ? selected : ""))
+											.text("Stock"))
 										.__()
 									.__()
 									.li().dynamic(li -> {

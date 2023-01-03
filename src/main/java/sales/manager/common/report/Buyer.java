@@ -1,6 +1,9 @@
 package sales.manager.common.report;
 
 import java.util.Objects;
+import java.util.zip.CRC32;
+
+import sales.manager.common.report.event.HashProvider;
 
 public record Buyer(
 	String username,
@@ -9,7 +12,7 @@ public record Buyer(
 	String addressRegion,
 	String addressPostcode,
 	String addressCountry,
-	String hash) {
+	long hash) implements HashProvider {
 
 	public Buyer {
 		Objects.requireNonNull(username);
@@ -18,9 +21,10 @@ public record Buyer(
 		Objects.requireNonNull(addressRegion);
 		Objects.requireNonNull(addressPostcode);
 		Objects.requireNonNull(addressCountry);
+		Objects.requireNonNull(hash);
 	}
 
-	public Buyer(
+	public static Buyer of(
 		String username,
 		String name,
 		String addressCity,
@@ -28,11 +32,19 @@ public record Buyer(
 		String addressPostcode,
 		String addressCountry)
 	{
-		this(username,
-			name,
-			addressCity,
-			addressRegion,
-			addressPostcode,
-			addressCountry,"");
+		CRC32 crc = new CRC32();
+		crc.update(username.getBytes());
+		crc.update(name.getBytes());
+		crc.update(addressCity.getBytes());
+		crc.update(addressRegion.getBytes());
+		crc.update(addressPostcode.getBytes());
+		crc.update(addressCountry.getBytes());
+		long hash = crc.getValue();
+		return new Buyer(username, name, addressCity, addressRegion, addressPostcode, addressCountry, hash);
+	}
+
+	@Override
+	public long getHashCode() {
+		return hash;
 	}
 }

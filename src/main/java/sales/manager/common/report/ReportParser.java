@@ -1,11 +1,10 @@
 package sales.manager.common.report;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class ReportParser {
@@ -15,25 +14,30 @@ public class ReportParser {
 		this.file = file;
 	}
 
-	public void parse() throws FileNotFoundException, IOException, ParseException {
+	public List<Record> parse() throws Exception {
 		try (Stream<String> lines = Files.lines(Path.of(file), StandardCharsets.UTF_8))
 		{
 			boolean start = false;
-		    for (String line : (Iterable<String>) lines::iterator)
-		    {
-		        if (!start) {
-			    	if (line.contains("Transaction creation date")) {
-			        	start = true;
-			        }
-			    	continue;
-		        }
+			List<Record> list = new ArrayList<Record>();
+		    for (String line : (Iterable<String>) lines::iterator) {
+				if (!start) {
+					if (line.contains("Transaction creation date")) {
+						start = true;
+					}
+					continue;
+				}
+				Record item = Record.fromCSVRow(line);
+				if (item != null) {
+					list.add(item);
+				} else {
+					System.out.print("IGNORE: ");
+				}
 
-		        var r = Record.fromCSVRow(line);
-
-		        r.getData();
-		    	System.out.println(line);
-
+				System.out.println(line);
 		    }
+		    return list;
+		} catch (Exception e) {
+			return null;
 		}
 	}
 }

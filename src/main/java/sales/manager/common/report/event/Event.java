@@ -1,4 +1,4 @@
-package sales.manager.common.report;
+package sales.manager.common.report.event;
 
 public enum Event {
 	Order,
@@ -7,5 +7,6 @@ public enum Event {
 	Postagelabel,
 	Paymentdispute,
 	Hold,
-	Claim
+	Claim,
+	Payout
 }

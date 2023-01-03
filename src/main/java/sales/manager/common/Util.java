@@ -3,6 +3,7 @@ package sales.manager.common;
 import java.io.File;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -66,6 +67,24 @@ public class Util {
 			e.printStackTrace();
 			return "";
 		}
+	}
+
+	public static byte[] longToBytes(long x) {
+		ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
+	    buffer.putLong(x);
+	    return buffer.array();
+	}
+
+	public static byte[] intToBytes(int x) {
+		ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
+	    buffer.putInt(x);
+	    return buffer.array();
+	}
+
+	public static byte[] doubleToBytes(double x) {
+		ByteBuffer buffer = ByteBuffer.allocate(Double.BYTES);
+	    buffer.putDouble(x);
+	    return buffer.array();
 	}
 
 }
