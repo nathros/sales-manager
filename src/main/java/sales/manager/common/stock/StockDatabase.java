@@ -14,6 +14,7 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import sales.manager.common.log.Log;
 import sales.manager.web.Main;
@@ -73,10 +74,15 @@ public class StockDatabase {
 				if (keyValue.length > 1) {
 					for (Field field: fieldList) {
 						if (field.getName().equals(keyValue[0])) {
-							if (field.getType() == Double.class) {
+							Class<?> type = field.getType();
+							if (type == Double.class) {
 								field.set(newItem, Double.valueOf(keyValue[1]));
-							}  else if (field.getType() == LocalDate.class) {
+							}  else if (type == LocalDate.class) {
 								field.set(newItem, LocalDate.parse(keyValue[1]));
+							} else if (type == List.class) {
+								String listStr = keyValue[1].substring(1, keyValue[1].length() - 1);
+								List<String> list = Arrays.asList(listStr.split(","));
+								field.set(newItem, list);
 							} else {
 								field.set(newItem, keyValue[1]);
 							}

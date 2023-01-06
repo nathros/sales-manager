@@ -35,6 +35,7 @@ public class AddStockHandler extends BaseHandler {
 	private final static String TAX = "tax";
 	private final static String DATE = "date";
 	private final static String RX = "rx";
+	private final static String ITEMIDS = "itemids";
 
 	private final static String ADD = "add";
 	private final static String ADD_ADD = "add";
@@ -52,13 +53,14 @@ public class AddStockHandler extends BaseHandler {
 		final String rxQ = model.getQueryNoNull(RX);
 		final String addQ = model.getQueryNoNull(ADD);
 		final String editQ = model.getQueryNoNull(EDIT);
+		final String itemIDsQ = model.getQueryNoNull(ITEMIDS).trim().replace("\t", "");
 
 		String tmpErrorMsg = null;
 		String tmpSuccessMsg = null;
 		final StockItem editItem = Database.stock.findByID(idQ);
 		if (addQ.equals(ADD_ADD)) {
 			try {
-				var stock = new StockItem(nameQ, supplierQ, priceQ, taxQ, dateQ, rxQ);
+				var stock = new StockItem(nameQ, supplierQ, priceQ, taxQ, dateQ, rxQ, itemIDsQ);
 				Database.stock.addStock(idQ, stock);
 				tmpSuccessMsg = "Add success";
 			} catch (Exception e) {
@@ -67,7 +69,7 @@ public class AddStockHandler extends BaseHandler {
 		} else if (addQ.equals(ADD_UPDATE)) {
 			try {
 				var item = Database.stock.findByID(idQ);
-				var stock = new StockItem(nameQ, supplierQ, priceQ, taxQ, dateQ, rxQ);
+				var stock = new StockItem(nameQ, supplierQ, priceQ, taxQ, dateQ, rxQ, itemIDsQ);
 				item.update(stock);
 				Database.stock.writeDatabase();
 				tmpSuccessMsg = "Update success";
@@ -81,7 +83,14 @@ public class AddStockHandler extends BaseHandler {
 			else {
 				if (editQ.equals(EDIT_DEL)) {
 					if (Database.stock.remove(idQ) == false) tmpErrorMsg = idQ + " is not in database";
-					else tmpSuccessMsg = idQ + " has been removed from database";
+					else {
+						tmpSuccessMsg = idQ + " has been removed from database";
+						try {
+							Database.stock.writeDatabase();
+						} catch (Exception e) {
+							tmpErrorMsg = e.getMessage();
+						}
+					}
 				}
 			}
 		}
@@ -122,6 +131,12 @@ public class AddStockHandler extends BaseHandler {
 		    }
 		    return rxQ;
 		};
+		Supplier<String> displayItemIDs = () -> {
+			if (editItem != null) {
+				return editItem.getItemIDsStr();
+		    }
+		    return itemIDsQ;
+		};
 
 		final String error = tmpErrorMsg == null ? "" : tmpErrorMsg;
 		final String message = tmpSuccessMsg;
@@ -134,6 +149,7 @@ public class AddStockHandler extends BaseHandler {
 		final String taxD = displayTax.get();
 		final String dateD = displayDate.get();
 		final String rxD = displayRX.get();
+		final String itemIDsD = displayItemIDs.get();
 		view
 			.div()
 				.p().text("AddStockHandler").__()
@@ -149,7 +165,7 @@ public class AddStockHandler extends BaseHandler {
 						.br().__()
 
 						.label().attrStyle("display:inline-block;width:150px").text("Name:").__()
-						.input().attrType(EnumTypeInputType.TEXT).attrName(NAME).attrValue(nameD).__()
+						.input().attrStyle("width:250px").attrType(EnumTypeInputType.TEXT).attrName(NAME).attrValue(nameD).__()
 						.br().__()
 
 						.label().attrStyle("display:inline-block;width:150px").text("Supplier:").__()
@@ -172,8 +188,12 @@ public class AddStockHandler extends BaseHandler {
 						.input().attrType(EnumTypeInputType.DATE).attrName(RX).attrValue(rxD).__()
 						.br().__()
 
+						.label().attrStyle("display:inline-block;width:150px").text("Sale Item IDs:").__()
+						.textarea().attrStyle("height:200px").attrName(ITEMIDS).text(itemIDsD).__()
+						.br().__()
+
 						.input().attrType(EnumTypeInputType.HIDDEN).attrName(ADD).attrValue(addValue).__()
-						.button().attrClass(CSS.BUTTON).attrType(EnumTypeButtonType.SUBMIT).text(editItem == null ? "Add" : "Update").__()
+						.button().attrClass(CSS.BUTTON).attrStyle("float:right").attrType(EnumTypeButtonType.SUBMIT).text(editItem == null ? "Add" : "Update").__()
 					.__();
 				})
 			.__(); // div

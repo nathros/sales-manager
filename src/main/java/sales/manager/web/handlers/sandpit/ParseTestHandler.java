@@ -7,8 +7,6 @@ import java.net.HttpURLConnection;
 import com.sun.net.httpserver.HttpExchange;
 
 import htmlflow.DynamicHtml;
-import sales.manager.common.SalesDatabase;
-import sales.manager.common.report.ReportParser;
 import sales.manager.web.handlers.BaseHandler;
 import sales.manager.web.handlers.templates.TemplateHead.TemplateHeadModel;
 import sales.manager.web.handlers.templates.TemplatePage;
@@ -25,16 +23,6 @@ public class ParseTestHandler extends BaseHandler {
 			.div().attrStyle("text-align:center")
 				.p().a().attrHref("P").text("test").__().__()
 			.__(); //  div
-
-
-		var db = new SalesDatabase();
-
-		var a = new ReportParser("report.csv");
-		try {
-			a.parse();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override

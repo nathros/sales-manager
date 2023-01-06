@@ -1,9 +1,9 @@
-package sales.manager.common.report;
+package sales.manager.common.sales.report;
 
 import java.util.Objects;
 import java.util.zip.CRC32;
 
-import sales.manager.common.report.event.HashProvider;
+import sales.manager.common.sales.report.event.HashProvider;
 
 public record Buyer(
 	String username,
@@ -46,5 +46,10 @@ public record Buyer(
 	@Override
 	public long getHashCode() {
 		return hash;
+	}
+
+	@Override
+	public String getItemID() {
+		return "";
 	}
 }

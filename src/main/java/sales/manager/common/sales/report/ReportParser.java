@@ -1,4 +1,4 @@
-package sales.manager.common.report;
+package sales.manager.common.sales.report;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;

@@ -105,13 +105,36 @@ a {
 	background-image: url('/assets/img/bucket-spade-fill.svg');
 }
 
-#nav-toggle a:hover:before {
+.icon-bar-chart:before {
+	background-image: url('/assets/img/bar-chart-fill.svg');
+}
+
+.icon-sales:before {
+	background-image: url('/assets/img/receipt.svg');
+}
+
+.icon-stock:before {
+	background-image: url('/assets/img/box-seam-fill.svg');
+}
+
+#nav-toggle a:hover:before, #nav-toggle a.selected:before  {
 	opacity: 1;
 }
 
-#nav-toggle a:hover {
+#nav-menu li a.selected {
+	background-color: rgb(0 119 161);
+}
+
+#nav-toggle a:hover, #nav-toggle a.selected {
 	color: rgba(255, 255, 255, 1);
-	background-color: rgba(255, 255, 255, 0.5);
+}
+
+#nav-toggle a.selected:hover {
+	color: rgba(255, 255, 255, 0.9);
+}
+
+#nav-toggle a.selected:hover:before  {
+	opacity: 0.9;
 }
 
 #nav-toggle input {
@@ -139,11 +162,6 @@ a {
 	box-sizing: border-box;
 	overflow-x: clip;
 }
-
-#nav-menu li a.selected {
-	background-color: rgba(255, 0, 0, 0.5);
-}
-
 
 .btn {
 	align-items: center;
@@ -188,4 +206,26 @@ a {
 
 .background-caution {
 	background-color: darkorange;
+}
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+table td, table th {
+	border: 1px solid #ddd;
+	padding: 8px;
+}
+
+table tr:nth-child(even){background-color: #f2f2f2;}
+
+table tr:hover {background-color: #ddd;}
+
+table th {
+	padding-top: 12px;
+	padding-bottom: 12px;
+	text-align: left;
+	background-color: #04AA6D;
+	color: white;
 }

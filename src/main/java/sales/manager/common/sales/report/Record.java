@@ -1,4 +1,4 @@
-package sales.manager.common.report;
+package sales.manager.common.sales.report;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -7,11 +7,11 @@ import java.util.Locale;
 import java.util.zip.CRC32;
 
 import sales.manager.common.Util;
-import sales.manager.common.report.event.Event;
-import sales.manager.common.report.event.HashProvider;
-import sales.manager.common.report.event.Order;
-import sales.manager.common.report.event.PostageLabel;
-import sales.manager.common.report.event.Refund;
+import sales.manager.common.sales.report.event.Event;
+import sales.manager.common.sales.report.event.HashProvider;
+import sales.manager.common.sales.report.event.Order;
+import sales.manager.common.sales.report.event.PostageLabel;
+import sales.manager.common.sales.report.event.Refund;
 
 public class Record {
 	private LocalDate date;
@@ -97,5 +97,10 @@ public class Record {
 
 	public long getHash() {
 		return hash;
+	}
+
+	public String getItemID() {
+		HashProvider provider = (HashProvider)data;
+		return provider.getItemID();
 	}
 }

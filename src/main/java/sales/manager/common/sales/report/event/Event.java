@@ -1,4 +1,4 @@
-package sales.manager.common.report.event;
+package sales.manager.common.sales.report.event;
 
 public enum Event {
 	Order,

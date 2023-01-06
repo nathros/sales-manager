@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.sun.net.httpserver.HttpExchange;
 
+import sales.manager.common.Util;
 import sales.manager.web.handlers.BaseHandler;
 
 public class BodyModel {
@@ -34,7 +35,7 @@ public class BodyModel {
 	public String getQueryNoNull(String key) {
 		String q = queries.get(key);
 		if (q == null) return "";
-		else return q;
+		else return Util.decodeUrl(q);
 	}
 
 	public boolean hasQuery() {

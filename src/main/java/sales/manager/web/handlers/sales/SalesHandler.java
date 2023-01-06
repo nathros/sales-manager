@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import com.sun.net.httpserver.HttpExchange;
 
 import htmlflow.DynamicHtml;
+import sales.manager.common.Database;
 import sales.manager.web.handlers.BaseHandler;
 import sales.manager.web.handlers.templates.TemplateHead.TemplateHeadModel;
 import sales.manager.web.handlers.templates.TemplatePage;
@@ -20,6 +21,8 @@ public class SalesHandler extends BaseHandler {
 	public static DynamicHtml<BodyModel> view = DynamicHtml.view(SalesHandler::body);
 
 	static void body(DynamicHtml<BodyModel> view, BodyModel model) {
+		Database.sales.readDatabase();
+
 		view
 			.div()
 				.p().text("SalesHandler").__()

@@ -4,13 +4,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 
-import org.xmlet.htmlapifaster.EnumBorderType;
-
 import com.sun.net.httpserver.HttpExchange;
 
 import htmlflow.DynamicHtml;
 import sales.manager.common.Database;
-import sales.manager.common.stock.StockDatabase;
+import sales.manager.common.stock.StockItem;
 import sales.manager.web.handlers.BaseHandler;
 import sales.manager.web.handlers.HTMLEntity;
 import sales.manager.web.handlers.templates.TemplateHead.TemplateHeadModel;
@@ -26,18 +24,11 @@ public class StockHandler extends BaseHandler {
 	public static DynamicHtml<BodyModel> view = DynamicHtml.view(StockHandler::body);
 
 	static void body(DynamicHtml<BodyModel> view, BodyModel model) {
-		StockDatabase sdb = new StockDatabase();
-		String message = null;
-
-		final String showMessage = message;
 		final var stock = Database.stock.getItems();
-
 		view
 			.div()
-				.p().text("StockHandler").__()
-				.p().dynamic(p -> p.text("Message: " + showMessage)).__()
 				.a().attrClass(CSS.BUTTON).attrHref(AddStockHandler.PATH).text("Add New Stock Item").__()
-				.table().attrBorder(EnumBorderType._1).dynamic(table -> {
+				.table().dynamic(table -> {
 					table
 						.tr()
 							.th().text("ID").__()
@@ -47,11 +38,12 @@ public class StockHandler extends BaseHandler {
 							.th().text("Import Fee").__()
 							.th().text("Purchase Date").__()
 							.th().text("Received Date").__()
+							.th().text("Item IDs").__()
 							.th().text("Action").__()
 						.__();
 					for (Integer key: stock.keySet()) {
-						var item = stock.get(key);
-						table
+						StockItem item = stock.get(key);
+						var last = table
 							.tr()
 								.td().text(key).__()
 								.td().text(item.getItemNameStr()).__()
@@ -60,7 +52,11 @@ public class StockHandler extends BaseHandler {
 								.td().text(HTMLEntity.POUND + item.getImportFeeStr()).__()
 								.td().text(item.getPurchaseDateStr()).__()
 								.td().text(item.getReceivedDateStr()).__()
-								.td()
+								.td();
+								for (String i: item.getItemIDs()) {
+									last = last.a().text(i).__().br().__();
+								}
+								last.__().td()
 									.a().attrClass(CSS.BUTTON).attrHref(AddStockHandler.PATH + "?" +
 										AddStockHandler.EDIT + "=" + AddStockHandler.EDIT_EDIT + "&" +
 										AddStockHandler.ID + "=" + key)

@@ -1,9 +1,9 @@
-package sales.manager.common.report.event;
+package sales.manager.common.sales.report.event;
 
 import java.util.zip.CRC32;
 
 import sales.manager.common.Util;
-import sales.manager.common.report.Record;
+import sales.manager.common.sales.report.Record;
 
 public record PostageLabel(
 	String itemID,				// 17
@@ -35,5 +35,10 @@ public record PostageLabel(
 	@Override
 	public long getHashCode() {
 		return hash;
+	}
+
+	@Override
+	public String getItemID() {
+		return itemID;
 	}
 }
