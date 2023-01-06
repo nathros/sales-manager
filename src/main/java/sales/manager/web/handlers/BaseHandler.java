@@ -10,6 +10,7 @@ import java.util.Map;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
+import sales.manager.common.log.Log;
 import sales.manager.web.handlers.templates.TemplateInternalError;
 import sales.manager.web.handlers.templates.TemplateInternalError.TemplateInternalErrorModel;
 
@@ -35,8 +36,7 @@ public abstract class BaseHandler implements HttpHandler {
 
 	@Override
 	public void handle(HttpExchange he) throws IOException {
-
-		System.out.println("Request (" + String.format("%04d", count) + "): " + he.getRequestHeaders().getFirst("Host")
+		Log.l.finest("Request (" + String.format("%04d", count) + "): " + he.getRequestHeaders().getFirst("Host")
 				+ he.getRequestURI());
 
 		try {

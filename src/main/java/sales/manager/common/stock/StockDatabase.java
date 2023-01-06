@@ -35,12 +35,14 @@ public class StockDatabase {
 		for (Integer key : stockList.keySet()) {
 			StockItem item = stockList.get(key);
 			for (Field field : fields) {
-				writer.write(field.getName() + "=" + field.get(item));
+				Object object = field.get(item);
+				if (object == null) object = "";
+				writer.write(field.getName() + "=" + object);
 				writer.newLine();
-				count++;
 			}
 			writer.write(ID + "=" + key);
 			writer.newLine();
+			count++;
 		}
 		writer.close();
 		Log.l.info("Successfully written stock database: " + count + " records, " + stockIDCount + " max id");
@@ -68,20 +70,20 @@ public class StockDatabase {
 				newItem = new StockItem();
 				continue;
 	    	} else {
-	    		for (Field field: fieldList) {
-	    			if (field.getName().equals(keyValue[0])) {
-	    				if (field.getType() == Double.class) {
-	    					field.set(newItem, Double.valueOf(keyValue[1]));
-	    				}  else if (field.getType() == LocalDate.class) {
-	    					field.set(newItem, LocalDate.parse(keyValue[1]));
-	    				} else {
-	    					if (keyValue.length > 1)
-	    						field.set(newItem, keyValue[1]);
-	    				}
-	    				break;
-	    			}
-	    		}
-
+				if (keyValue.length > 1) {
+					for (Field field: fieldList) {
+						if (field.getName().equals(keyValue[0])) {
+							if (field.getType() == Double.class) {
+								field.set(newItem, Double.valueOf(keyValue[1]));
+							}  else if (field.getType() == LocalDate.class) {
+								field.set(newItem, LocalDate.parse(keyValue[1]));
+							} else {
+								field.set(newItem, keyValue[1]);
+							}
+							break;
+						}
+					}
+				}
 	    	}
 	    }
 	    br.close();
@@ -111,14 +113,35 @@ public class StockDatabase {
 		}
 	}
 
-	public boolean addStock(Integer id, StockItem item) throws Exception {
-		if (id != null) {
-			stockList.put(id, item);
+	public boolean addStock(String id, StockItem item) throws Exception {
+		if ((id != null) && !id.equals("")) {
+			stockList.put(Integer.valueOf(id), item);
 		} else {
-			stockIDCount++;
 			stockList.put(stockIDCount, item);
+			stockIDCount++;
 		}
 		return writeDatabase();
+	}
+
+	public HashMap<Integer, StockItem> getItems() {
+		return stockList;
+	}
+
+	public int getStockIDCount() {
+		return stockIDCount;
+	}
+
+	public StockItem findByID(Integer id) {
+		return stockList.get(id);
+	}
+
+	public StockItem findByID(String id) {
+		if (id == null || id.equals("")) return null;
+		return findByID(Integer.valueOf(id));
+	}
+
+	public boolean remove(String id) {
+		return stockList.remove(Integer.valueOf(id)) != null;
 	}
 
 }

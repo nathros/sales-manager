@@ -1,4 +1,4 @@
-package sales.manager.web;
+package sales.manager.web.resource;
 
 import sales.manager.web.handlers.AssetHandler;
 

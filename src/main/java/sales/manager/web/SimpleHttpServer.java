@@ -3,6 +3,7 @@ package sales.manager.web;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Map;
+import java.util.logging.Level;
 
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -31,12 +32,12 @@ public class SimpleHttpServer {
 			server.setExecutor(null);
 			server.start();
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.l.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
 	public void Stop() {
 		server.stop(0);
-		System.out.println("HTTP server stopped");
+		Log.l.info("HTTP server stopped");
 	}
 }

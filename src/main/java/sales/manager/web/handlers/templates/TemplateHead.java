@@ -3,8 +3,8 @@ package sales.manager.web.handlers.templates;
 import org.xmlet.htmlapifaster.EnumRelType;
 
 import htmlflow.DynamicHtml;
-import sales.manager.web.Asset;
 import sales.manager.web.handlers.BaseHandler;
+import sales.manager.web.resource.Asset;
 
 public class TemplateHead {
 	public static class TemplateHeadModel {
