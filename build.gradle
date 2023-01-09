@@ -15,7 +15,7 @@ dependencies {
 	implementation group: 'com.github.xmlet', name: 'htmlflow', version: '3.9'
 }
 
-mainClassName = 'sales.manager.common.Main'
+mainClassName = 'sales.manager.web.Main'
 
 shadowJar {}
 

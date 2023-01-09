@@ -1,6 +1,5 @@
 package sales.manager.web.handlers;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -9,12 +8,11 @@ import java.net.URI;
 
 import com.sun.net.httpserver.HttpExchange;
 
-import sales.manager.web.AssetsRoot;
 import sales.manager.web.resource.Asset;
 
 public class AssetHandler extends BaseHandler {
 	public static final String PATH = "/assets";
-	private static String path = AssetsRoot.class.getPackageName().replace(".", File.separator);
+	private static String path = "sales/manager/web";
 	private static ClassLoader loader = new Asset().getClass().getClassLoader();
 
 	@Override
