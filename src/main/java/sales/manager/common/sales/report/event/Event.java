@@ -8,5 +8,13 @@ public enum Event {
 	Paymentdispute,
 	Hold,
 	Claim,
-	Payout
+	Payout;
+
+	public String getPrettyStr() {
+		switch (this) {
+		case Postagelabel: return "Postage Label";
+		case Paymentdispute: return "Payment Dispute";
+		default: return this.name();
+		}
+	}
 }

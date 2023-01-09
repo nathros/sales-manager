@@ -48,7 +48,7 @@ a {
 }
 
 .main-content-wrapper {
-	*padding-top: 3rem;
+	padding: 0.5rem;
 }
 
 #nav-toggle {
@@ -63,7 +63,7 @@ a {
 #nav-toggle a {
 	text-decoration: none;
 	color: rgba(255, 255, 255, 0.5);
-	transition: color 0.3s ease;
+	transition: 0.3s ease;
 	*display: inline-block;
 	display: flex;
 	align-items: center;
@@ -76,6 +76,7 @@ a {
 	content: '';
 	height: 2rem;
 	width: 2rem;
+	transition: 0.3s ease;
 	background-repeat: no-repeat;
 	background-position: center center;
 	display: inline-block;
@@ -122,19 +123,19 @@ a {
 }
 
 #nav-menu li a.selected {
-	background-color: rgb(0 119 161);
+	background-color: rgb(0, 119, 161);
 }
 
 #nav-toggle a:hover, #nav-toggle a.selected {
 	color: rgba(255, 255, 255, 1);
 }
 
-#nav-toggle a.selected:hover {
-	color: rgba(255, 255, 255, 0.9);
+#nav-toggle a:hover {
+	background-color: rgba(255, 255, 255, 0.1);
 }
 
-#nav-toggle a.selected:hover:before  {
-	opacity: 0.9;
+#nav-toggle a.selected:hover {
+	opacity: 0.75;
 }
 
 #nav-toggle input {
@@ -199,7 +200,7 @@ a {
 }
 
 .btn:active {
-	background-color: #c85000;
+	background-color: rgb(32, 74, 135);
 	box-shadow: rgba(0, 0, 0, .06) 0 2px 4px;
 	transform: translateY(0);
 }

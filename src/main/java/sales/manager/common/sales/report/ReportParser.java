@@ -30,10 +30,10 @@ public class ReportParser {
 				if (item != null) {
 					list.add(item);
 				} else {
-					System.out.print("IGNORE: ");
+					//System.out.print("IGNORE: ");
 				}
 
-				System.out.println(line);
+				//System.out.println(line);
 		    }
 		    return list;
 		} catch (Exception e) {

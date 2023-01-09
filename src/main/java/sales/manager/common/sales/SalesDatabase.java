@@ -8,18 +8,18 @@ import sales.manager.common.sales.report.ReportParser;
 import sales.manager.common.sales.report.TransactionGroup;
 
 public class SalesDatabase {
-	HashMap<String, TransactionGroup> sales = new HashMap<String, TransactionGroup>();
+	private HashMap<String, TransactionGroup> sales = new HashMap<String, TransactionGroup>();
 
 	boolean addToDatabase(List<Record> records) {
-		for (Record rec : records) {
-			var group = sales.get(rec.getOrderNumber());
+		for (Record record: records) {
+			String id = record.getItemID();
+			if (id.equals("")) continue;
+			TransactionGroup group = sales.get(id);
 			if (group == null) {
-				TransactionGroup tg = new TransactionGroup();
-
-				sales.put(rec.getOrderNumber(), tg);
-			} else {
-
+				group = new TransactionGroup(id);
 			}
+			group.addRecord(record);
+			sales.put(id, group);
 		}
 		return true;
 	}
@@ -30,21 +30,15 @@ public class SalesDatabase {
 			List<Record> list = parser.parse();
 
 			sales = new HashMap<String, TransactionGroup>();
-			for (Record record: list) {
-				String id = record.getItemID();
-				TransactionGroup group = sales.get(id);
-				if (group == null) {
-					TransactionGroup newGroup = new TransactionGroup();
-					//todo
-					sales.put(id, newGroup);
-				} else {
-					//todo
-				}
-			}
+			addToDatabase(list);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return true;
+	}
+
+	public HashMap<String, TransactionGroup> getSales() {
+		return sales;
 	}
 }

@@ -60,7 +60,7 @@ public class Record {
 			default: return null;
 		}
 
-		return new Record(date, event, sep[3], data);
+		return new Record(date, event, sep[2], data);
 	}
 
 	public LocalDate getDate() {

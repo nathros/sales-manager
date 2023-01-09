@@ -1,6 +1,5 @@
 package sales.manager.web.handlers;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 
@@ -25,7 +24,7 @@ public class RootHandler extends BaseHandler {
 	}
 
 	@Override
-	public void requestHandle(HttpExchange he) throws IOException {
+	public void requestHandle(HttpExchange he) throws Exception {
 		TemplateHeadModel thm = TemplateHeadModel.of("Root");
 		TemplatePageModel tepm = TemplatePageModel.of(view, thm, SelectedPage.Admin, BodyModel.of(he, null));
 		String response = TemplatePage.view.render(tepm);
