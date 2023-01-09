@@ -2,6 +2,7 @@ package sales.manager.web.handlers.sales;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.sun.net.httpserver.HttpExchange;
@@ -11,6 +12,7 @@ import sales.manager.common.Database;
 import sales.manager.common.sales.report.Record;
 import sales.manager.common.sales.report.TransactionGroup;
 import sales.manager.common.sales.report.event.Order;
+import sales.manager.common.sales.report.event.PostageLabel;
 import sales.manager.web.handlers.BaseHandler;
 import sales.manager.web.handlers.templates.TemplateHead.TemplateHeadModel;
 import sales.manager.web.handlers.templates.TemplatePage;
@@ -33,9 +35,11 @@ public class SalesHandler extends BaseHandler {
 						.tr()
 							.th().text("Item ID").__()
 							.th().text("Transactions").__()
+							.th().text("Total").__()
 						.__();
 					for (String key: display.keySet()) {
 						TransactionGroup tg = display.get(key);
+						var gross = new ArrayList<Double>();
 						table
 							.tr()
 								.td().text(key).__()
@@ -46,8 +50,10 @@ public class SalesHandler extends BaseHandler {
 											.th().text("Date").__()
 											.th().text("Order Number").__()
 											.th().text("Event").__()
+											.th().text("Gross").__()
 										.__()
 										.of(next -> {
+											gross.clear();
 											for (Record rec: tg.getTransactions()) {
 												next.tr().of(tr -> {
 													tr.td().text(rec.getDate()).__();
@@ -56,16 +62,29 @@ public class SalesHandler extends BaseHandler {
 													switch (rec.getEventType()) {
 													case Order: {
 														Order data = (Order) rec.getData();
+														tr.td().text(data.grossTransaction()).__();
+														gross.add(data.grossTransaction());
+														break;
 													}
-
-
+													case Postagelabel: {
+														PostageLabel data = (PostageLabel) rec.getData();
+														tr.td().text(data.grossTransaction()).__();
+														gross.add(data.grossTransaction());
+													}
+													default:
+														break;
 													}
 												}).__();
 											}
 										});
 									}).__() // table
 								.__() // td
-							.__(); // tr
+								.td().of(td -> {
+									Double calcGross = 0.0;
+									for (Double i: gross) calcGross += i;
+									td.text(calcGross);
+								}).__()
+							.__();
 					}
 				})
 			.__(); // div
