@@ -36,6 +36,7 @@ public class AddStockHandler extends BaseHandler {
 	private final static String DATE = "date";
 	private final static String RX = "rx";
 	private final static String ITEMIDS = "itemids";
+	private final static String SOLD = "sold";
 
 	private final static String ADD = "add";
 	private final static String ADD_ADD = "add";
@@ -54,13 +55,14 @@ public class AddStockHandler extends BaseHandler {
 		final String addQ = model.getQueryNoNull(ADD);
 		final String editQ = model.getQueryNoNull(EDIT);
 		final String itemIDsQ = model.getQueryNoNull(ITEMIDS).trim().replace("\t", "");
+		final String soldQ = model.getQueryNoNull(SOLD);
 
 		String tmpErrorMsg = null;
 		String tmpSuccessMsg = null;
 		final StockItem editItem = Database.stock.findByID(idQ);
 		if (addQ.equals(ADD_ADD)) {
 			try {
-				var stock = new StockItem(nameQ, supplierQ, priceQ, taxQ, dateQ, rxQ, itemIDsQ);
+				var stock = new StockItem(nameQ, supplierQ, priceQ, taxQ, dateQ, rxQ, itemIDsQ, soldQ);
 				Database.stock.addStock(idQ, stock);
 				tmpSuccessMsg = "Add success";
 			} catch (Exception e) {
@@ -69,7 +71,7 @@ public class AddStockHandler extends BaseHandler {
 		} else if (addQ.equals(ADD_UPDATE)) {
 			try {
 				var item = Database.stock.findByID(idQ);
-				var stock = new StockItem(nameQ, supplierQ, priceQ, taxQ, dateQ, rxQ, itemIDsQ);
+				var stock = new StockItem(nameQ, supplierQ, priceQ, taxQ, dateQ, rxQ, itemIDsQ, soldQ);
 				item.update(stock);
 				Database.stock.writeDatabase();
 				tmpSuccessMsg = "Update success";
@@ -137,6 +139,12 @@ public class AddStockHandler extends BaseHandler {
 		    }
 		    return itemIDsQ;
 		};
+		Supplier<Boolean> displaySoldS = () -> {
+			if (editItem != null) {
+				return editItem.sold;
+		    }
+		    return soldQ.equals(BodyModel.QUERY_ON);
+		};
 
 		final String error = tmpErrorMsg == null ? "" : tmpErrorMsg;
 		final String message = tmpSuccessMsg;
@@ -150,6 +158,7 @@ public class AddStockHandler extends BaseHandler {
 		final String dateD = displayDate.get();
 		final String rxD = displayRX.get();
 		final String itemIDsD = displayItemIDs.get();
+		final Boolean soldD = displaySoldS.get();
 		view
 			.div()
 				.p().text("AddStockHandler").__()
@@ -186,6 +195,13 @@ public class AddStockHandler extends BaseHandler {
 
 						.label().attrStyle("display:inline-block;width:150px").text("Received Date:").__()
 						.input().attrType(EnumTypeInputType.DATE).attrName(RX).attrValue(rxD).__()
+						.br().__()
+
+						.label().attrStyle("display:inline-block;width:150px").text("Sold:").__()
+						.input().of(input -> {
+							if (soldD) input.attrType(EnumTypeInputType.CHECKBOX).attrName(SOLD).attrChecked(true).__();
+							else input.attrType(EnumTypeInputType.CHECKBOX).attrName(SOLD).__();
+						}).__()
 						.br().__()
 
 						.label().attrStyle("display:inline-block;width:150px").text("Sale Item IDs:").__()

@@ -15,7 +15,6 @@ public class TransactionGroup {
 
 	public boolean addRecord(Record record) {
 		transactions.add(record);
-
 		return true;
 	}
 

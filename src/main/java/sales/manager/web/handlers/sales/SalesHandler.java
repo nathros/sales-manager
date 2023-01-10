@@ -34,6 +34,7 @@ public class SalesHandler extends BaseHandler {
 					table
 						.tr()
 							.th().text("Item ID").__()
+							.th().text("Stock ID").__()
 							.th().text("Transactions").__()
 							.th().text("Total").__()
 						.__();
@@ -43,6 +44,7 @@ public class SalesHandler extends BaseHandler {
 						table
 							.tr()
 								.td().text(key).__()
+								.td().text(tg.getStockID()).__()
 								.td()
 									.table().of(transactionsTable -> {
 										transactionsTable

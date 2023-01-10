@@ -83,6 +83,9 @@ public class StockDatabase {
 								String listStr = keyValue[1].substring(1, keyValue[1].length() - 1);
 								List<String> list = Arrays.asList(listStr.split(","));
 								field.set(newItem, list);
+							} else if (type == Boolean.class) {
+								Boolean b = Boolean.valueOf(keyValue[1]);
+								field.set(newItem, b);
 							} else {
 								field.set(newItem, keyValue[1]);
 							}

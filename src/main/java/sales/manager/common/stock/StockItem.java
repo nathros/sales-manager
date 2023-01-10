@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import sales.manager.web.handlers.templates.models.BodyModel;
+
 public class StockItem {
 	public String itemName;
 	public String supplier;
@@ -12,6 +14,7 @@ public class StockItem {
 	public LocalDate purchaseDate;
 	public LocalDate receivedDate;
 	public List<String> itemIDs;
+	public Boolean sold;
 
 	public StockItem() {}
 
@@ -22,7 +25,8 @@ public class StockItem {
 		String importFee,
 		String purchaseDate,
 		String receivedDate,
-		String itemIDs) throws Exception
+		String itemIDs,
+		String sold) throws Exception
 	{
 		if ((itemName == null) | itemName.equals("")) throw new Exception("Item name is empty");
 		if ((supplier == null) | supplier.equals("")) throw new Exception("Supplier is empty");
@@ -37,6 +41,7 @@ public class StockItem {
 				if (!i.equals("")) this.itemIDs.add(i.trim());
 			}
 		}
+		if (sold == null) throw new Exception("Sold state is empty");
 
 		this.itemName = itemName;
 		this.supplier = supplier;
@@ -44,6 +49,9 @@ public class StockItem {
 		this.importFee = Double.valueOf(importFee);
 		this.purchaseDate = LocalDate.parse(purchaseDate);
 		if (!receivedDate.equals("")) this.receivedDate = LocalDate.parse(receivedDate);
+		if (sold.equals(BodyModel.QUERY_ON)) this.sold = true;
+		else if (sold.equals(BodyModel.QUERY_OFF)) this.sold = false;
+		else this.sold = Boolean.parseBoolean(sold);
 	}
 
 	public void update(StockItem item) {
@@ -54,6 +62,7 @@ public class StockItem {
 		this.purchaseDate = item.purchaseDate;
 		this.receivedDate = item.receivedDate;
 		this.itemIDs = item.itemIDs;
+		this.sold = item.sold;
 	}
 
 	public String getItemNameStr() {

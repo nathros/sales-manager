@@ -3,6 +3,8 @@ package sales.manager.web.handlers.stock;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 
+import org.xmlet.htmlapifaster.EnumTypeInputType;
+
 import com.sun.net.httpserver.HttpExchange;
 
 import htmlflow.DynamicHtml;
@@ -35,6 +37,7 @@ public class StockHandler extends BaseHandler {
 					table
 						.tr()
 							.th().text("ID").__()
+							.th().text("Sold").__()
 							.th().text("Purchase Date").__()
 							.th().text("Name").__()
 							.th().text("Supplier").__()
@@ -49,6 +52,10 @@ public class StockHandler extends BaseHandler {
 								StockItem item = stock.get(key);
 									tr
 										.td().text(key).__()
+										.td().of(td -> {
+											if (item.sold) td.input().attrType(EnumTypeInputType.CHECKBOX).attrChecked(item.sold).attrDisabled(true).__();
+											else td.input().attrType(EnumTypeInputType.CHECKBOX).attrDisabled(true).__();
+										}).__()
 										.td().text(item.getPurchaseDateStr()).__()
 										.td().text(item.getItemNameStr()).__()
 										.td().text(item.getSupplierStr()).__()
