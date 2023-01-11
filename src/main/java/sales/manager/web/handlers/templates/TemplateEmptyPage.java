@@ -2,7 +2,7 @@ package sales.manager.web.handlers.templates;
 
 import htmlflow.DynamicHtml;
 import sales.manager.web.handlers.BaseHandler;
-import sales.manager.web.handlers.templates.TemplateHead.TemplateHeadModel;
+import sales.manager.web.handlers.templates.models.TemplateHeadModel;
 
 public class TemplateEmptyPage {
 	public static class TemplateEmptyPageModel {
@@ -25,7 +25,7 @@ public class TemplateEmptyPage {
 		try {
 			view
 				.html().attrLang(BaseHandler.LANG_VALUE)
-					.dynamic(head -> view.addPartial(TemplateHead.view, TemplateHead.TemplateHeadModel.of(model.head.title)))
+					.dynamic(head -> view.addPartial(TemplateHead.view, TemplateHeadModel.of(model.head.getTitle())))
 					.body()
 						.dynamic(div -> view.addPartial(model.dynamicHtml, null))
 					.__() // body

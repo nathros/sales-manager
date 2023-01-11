@@ -8,11 +8,11 @@ import com.sun.net.httpserver.HttpExchange;
 
 import htmlflow.DynamicHtml;
 import sales.manager.web.handlers.BaseHandler;
-import sales.manager.web.handlers.templates.TemplateHead.TemplateHeadModel;
 import sales.manager.web.handlers.templates.TemplatePage;
 import sales.manager.web.handlers.templates.TemplatePage.SelectedPage;
 import sales.manager.web.handlers.templates.TemplatePage.TemplatePageModel;
 import sales.manager.web.handlers.templates.models.BodyModel;
+import sales.manager.web.handlers.templates.models.TemplateHeadModel;
 
 public class ParseTestHandler extends BaseHandler {
 	public static final String PATH = "/sandpit/parsetest";

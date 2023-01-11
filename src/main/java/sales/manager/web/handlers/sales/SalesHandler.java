@@ -14,20 +14,33 @@ import sales.manager.common.sales.report.TransactionGroup;
 import sales.manager.common.sales.report.event.Order;
 import sales.manager.common.sales.report.event.PostageLabel;
 import sales.manager.web.handlers.BaseHandler;
-import sales.manager.web.handlers.templates.TemplateHead.TemplateHeadModel;
 import sales.manager.web.handlers.templates.TemplatePage;
 import sales.manager.web.handlers.templates.TemplatePage.SelectedPage;
 import sales.manager.web.handlers.templates.TemplatePage.TemplatePageModel;
 import sales.manager.web.handlers.templates.models.BodyModel;
+import sales.manager.web.handlers.templates.models.TemplateHeadModel;
 
 public class SalesHandler extends BaseHandler {
 	public static final String PATH = "/sales";
 
+	public static final String FILTER_ID = "id";
+
 	public static DynamicHtml<BodyModel> view = DynamicHtml.view(SalesHandler::body);
 
 	static void body(DynamicHtml<BodyModel> view, BodyModel model) {
-		Database.sales.readDatabase();
-		final HashMap<String, TransactionGroup> display = Database.sales.getSales();
+		//Database.sales.readDatabase();
+		final HashMap<String, TransactionGroup> current = Database.sales.getSales();
+		final String idQ = model.getQuery(FILTER_ID);
+
+		final HashMap<String, TransactionGroup> display = new HashMap<String, TransactionGroup>();
+		if (idQ != null) {
+			var item = current.get(idQ);
+			if (item != null) {
+				display.put(idQ, item);
+			}
+		} else {
+			display.putAll(current);
+		}
 		view
 			.div()
 				.table().dynamic(table -> {

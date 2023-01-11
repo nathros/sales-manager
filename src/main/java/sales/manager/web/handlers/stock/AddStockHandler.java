@@ -3,6 +3,8 @@ package sales.manager.web.handlers.stock;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 import org.xmlet.htmlapifaster.EnumTypeButtonType;
@@ -15,11 +17,12 @@ import sales.manager.common.Database;
 import sales.manager.common.stock.StockItem;
 import sales.manager.web.handlers.BaseHandler;
 import sales.manager.web.handlers.HTMLEntity;
-import sales.manager.web.handlers.templates.TemplateHead.TemplateHeadModel;
 import sales.manager.web.handlers.templates.TemplatePage;
 import sales.manager.web.handlers.templates.TemplatePage.SelectedPage;
 import sales.manager.web.handlers.templates.TemplatePage.TemplatePageModel;
 import sales.manager.web.handlers.templates.models.BodyModel;
+import sales.manager.web.handlers.templates.models.TemplateHeadModel;
+import sales.manager.web.resource.Asset;
 import sales.manager.web.resource.CSS;
 
 public class AddStockHandler extends BaseHandler {
@@ -36,6 +39,7 @@ public class AddStockHandler extends BaseHandler {
 	private final static String DATE = "date";
 	private final static String RX = "rx";
 	private final static String ITEMIDS = "itemids";
+	private final static String POSTAGE = "postage";
 	private final static String SOLD = "sold";
 
 	private final static String ADD = "add";
@@ -54,7 +58,8 @@ public class AddStockHandler extends BaseHandler {
 		final String rxQ = model.getQueryNoNull(RX);
 		final String addQ = model.getQueryNoNull(ADD);
 		final String editQ = model.getQueryNoNull(EDIT);
-		final String itemIDsQ = model.getQueryNoNull(ITEMIDS).trim().replace("\t", "");
+		final List<String> itemIDsQ = model.getQueryArray(ITEMIDS);
+		final List<String> postageQ = model.getQueryArray(POSTAGE);
 		final String soldQ = model.getQueryNoNull(SOLD);
 
 		String tmpErrorMsg = null;
@@ -62,7 +67,7 @@ public class AddStockHandler extends BaseHandler {
 		final StockItem editItem = Database.stock.findByID(idQ);
 		if (addQ.equals(ADD_ADD)) {
 			try {
-				var stock = new StockItem(nameQ, supplierQ, priceQ, taxQ, dateQ, rxQ, itemIDsQ, soldQ);
+				var stock = new StockItem(nameQ, supplierQ, priceQ, taxQ, dateQ, rxQ, itemIDsQ, postageQ, soldQ);
 				Database.stock.addStock(idQ, stock);
 				tmpSuccessMsg = "Add success";
 			} catch (Exception e) {
@@ -71,9 +76,13 @@ public class AddStockHandler extends BaseHandler {
 		} else if (addQ.equals(ADD_UPDATE)) {
 			try {
 				var item = Database.stock.findByID(idQ);
-				var stock = new StockItem(nameQ, supplierQ, priceQ, taxQ, dateQ, rxQ, itemIDsQ, soldQ);
-				item.update(stock);
-				Database.stock.writeDatabase();
+				var stock = new StockItem(nameQ, supplierQ, priceQ, taxQ, dateQ, rxQ, itemIDsQ, postageQ, soldQ);
+				if (item == null) {
+					Database.stock.addStock(idQ, stock);
+				} else {
+					item.update(stock);
+					Database.stock.writeDatabase();
+				}
 				tmpSuccessMsg = "Update success";
 			} catch (Exception e) {
 				tmpErrorMsg = e.getMessage();
@@ -133,17 +142,33 @@ public class AddStockHandler extends BaseHandler {
 		    }
 		    return rxQ;
 		};
-		Supplier<String> displayItemIDs = () -> {
-			if (editItem != null) {
-				return editItem.getItemIDsStr();
-		    }
-		    return itemIDsQ;
-		};
-		Supplier<Boolean> displaySoldS = () -> {
+		Supplier<Boolean> displaySolds = () -> {
 			if (editItem != null) {
 				return editItem.sold;
 		    }
 		    return soldQ.equals(BodyModel.QUERY_ON);
+		};
+
+		Supplier<List<String>> displayItemIDs = () -> {
+			if (editItem != null) {
+				List<String> list = new ArrayList<String>();
+				list.addAll(editItem.getitemIDsPostageMap().keySet());
+				return list;
+		    }
+		    return itemIDsQ;
+		};
+
+		Supplier<List<String>> displayPostages = () -> {
+			if (editItem != null) {
+				List<Double> tmp = new ArrayList<Double>();
+				tmp.addAll(editItem.getitemIDsPostageMap().values());
+				List<String> list = new ArrayList<String>();
+				for (Double cost: tmp) {
+					list.add(String.format("%.2f", cost));
+				}
+				return list;
+		    }
+		    return itemIDsQ;
 		};
 
 		final String error = tmpErrorMsg == null ? "" : tmpErrorMsg;
@@ -157,8 +182,9 @@ public class AddStockHandler extends BaseHandler {
 		final String taxD = displayTax.get();
 		final String dateD = displayDate.get();
 		final String rxD = displayRX.get();
-		final String itemIDsD = displayItemIDs.get();
-		final Boolean soldD = displaySoldS.get();
+		final Boolean soldD = displaySolds.get();
+		final List<String> displayItemIDsD = displayItemIDs.get();
+		final List<String> postageD = displayPostages.get();
 		view
 			.div()
 				.p().text("AddStockHandler").__()
@@ -205,7 +231,35 @@ public class AddStockHandler extends BaseHandler {
 						.br().__()
 
 						.label().attrStyle("display:inline-block;width:150px").text("Sale Item IDs:").__()
-						.textarea().attrStyle("height:200px").attrName(ITEMIDS).text(itemIDsD).__()
+						.div().attrStyle("display:inline-block").attrId("list-container")
+						.of(o -> {
+							o
+								.button().attrType(EnumTypeButtonType.BUTTON).attrOnclick("AddSaleRow()").text("+").__()
+								.label().attrStyle("float:left").text("Item ID").__()
+								.label().attrStyle("float:right").text("Postage Cost").__()
+								.br().__();
+
+							if (displayItemIDsD != null && displayItemIDsD.size() > 0) {
+								for (int count = 0; count < displayItemIDsD.size(); count++) {
+									String id = displayItemIDsD.get(count);
+									String cost = postageD.get(count);
+									o.div().attrId("list-" + count);
+										o.input().attrType(EnumTypeInputType.TEXT).attrName(ITEMIDS).attrValue(id).__();
+										o.input().attrType(EnumTypeInputType.TEXT).attrName(POSTAGE).attrValue(String.valueOf(cost)).__();
+										if (count == 0) o.button().attrType(EnumTypeButtonType.BUTTON).attrOnclick("removeSaleRow(this)").attrDisabled(true).text("X").__();
+										else o.button().attrType(EnumTypeButtonType.BUTTON).attrOnclick("removeSaleRow(this)").text("X").__();
+										o.br().__();
+									o.__();
+								}
+							} else {
+								o.div().attrId("list-0");
+									o.input().attrType(EnumTypeInputType.TEXT).attrName(ITEMIDS).attrValue("").__();
+									o.input().attrType(EnumTypeInputType.TEXT).attrName(POSTAGE).attrValue("").__();
+									//o.button().attrType(EnumTypeButtonType.BUTTON).attrOnclick("AddSaleRow()").text("+").__();
+									o.button().attrType(EnumTypeButtonType.BUTTON).attrOnclick("removeSaleRow(this)").attrDisabled(true).text("X").__();
+								o.__();
+							}
+						}).__()
 						.br().__()
 
 						.input().attrType(EnumTypeInputType.HIDDEN).attrName(ADD).attrValue(addValue).__()
@@ -220,6 +274,7 @@ public class AddStockHandler extends BaseHandler {
 	public void requestHandle(HttpExchange he) throws IOException {
 		try {
 			TemplateHeadModel thm = TemplateHeadModel.of("Add New Stock Item");
+			thm.AddScript(Asset.JS_ADD_STOCK);
 			TemplatePageModel tepm = TemplatePageModel.of(view, thm, SelectedPage.Stock, BodyModel.of(he, null));
 			String response = TemplatePage.view.render(tepm);
 

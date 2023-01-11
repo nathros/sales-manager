@@ -5,6 +5,8 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.sun.net.httpserver.HttpExchange;
@@ -64,7 +66,7 @@ public abstract class BaseHandler implements HttpHandler {
 		}
 	}
 
-	public static void parseQuery(String query, Map<String, String> parameters) {
+	public static void parseQuery(String query, Map<String, Object> parameters) {
 		if (query != null) {
 			String pairs[] = query.split("[&]");
 
@@ -85,6 +87,19 @@ public abstract class BaseHandler implements HttpHandler {
 
 				if (!parameters.containsKey(key)) {
 					parameters.put(key, value);
+				} else if (key != null) {
+					Object o = parameters.get(key);
+					if (o instanceof String) {
+						List<String> list = new ArrayList<String>();
+						list.add((String) o);
+						list.add(value);
+						parameters.put(key, list);
+					} else {
+						@SuppressWarnings("unchecked")
+						List<String> list = (List<String>) o;
+						list.add(value);
+
+					}
 				}
 			}
 		}

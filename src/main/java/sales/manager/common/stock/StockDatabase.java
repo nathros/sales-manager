@@ -79,6 +79,17 @@ public class StockDatabase {
 								field.set(newItem, Double.valueOf(keyValue[1]));
 							}  else if (type == LocalDate.class) {
 								field.set(newItem, LocalDate.parse(keyValue[1]));
+							} else if (type == HashMap.class) {
+								int first = line.indexOf("{");
+								int second = line.indexOf("}");
+								var data = line.substring(first + 1, second);
+								String split[] = data.split(", ");
+								HashMap<String, Double> map = new HashMap<String, Double>();
+								for (String i: split) {
+									String mapKV[] = i.split("=");
+									map.put(mapKV[0], Double.valueOf(mapKV[1]));
+								}
+								field.set(newItem, map);
 							} else if (type == List.class) {
 								String listStr = keyValue[1].substring(1, keyValue[1].length() - 1);
 								List<String> list = Arrays.asList(listStr.split(","));
@@ -124,11 +135,13 @@ public class StockDatabase {
 
 	public boolean addStock(String id, StockItem item) throws Exception {
 		if ((id != null) && !id.equals("")) {
-			stockList.put(Integer.valueOf(id), item);
+			var idInt = Integer.valueOf(id);
+			if (stockList.containsKey(idInt)) throw new Exception("ID " + id + " already exists int stock database");
+			stockList.put(idInt, item);
 		} else {
 			stockList.put(stockIDCount, item);
-			stockIDCount++;
 		}
+		stockIDCount++;
 		return writeDatabase();
 	}
 

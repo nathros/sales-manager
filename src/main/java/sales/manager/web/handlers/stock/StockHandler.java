@@ -2,6 +2,7 @@ package sales.manager.web.handlers.stock;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.util.HashMap;
 
 import org.xmlet.htmlapifaster.EnumTypeInputType;
 
@@ -12,11 +13,12 @@ import sales.manager.common.Database;
 import sales.manager.common.stock.StockItem;
 import sales.manager.web.handlers.BaseHandler;
 import sales.manager.web.handlers.HTMLEntity;
-import sales.manager.web.handlers.templates.TemplateHead.TemplateHeadModel;
+import sales.manager.web.handlers.sales.SalesHandler;
 import sales.manager.web.handlers.templates.TemplatePage;
 import sales.manager.web.handlers.templates.TemplatePage.SelectedPage;
 import sales.manager.web.handlers.templates.TemplatePage.TemplatePageModel;
 import sales.manager.web.handlers.templates.models.BodyModel;
+import sales.manager.web.handlers.templates.models.TemplateHeadModel;
 import sales.manager.web.resource.CSS;
 
 public class StockHandler extends BaseHandler {
@@ -28,11 +30,23 @@ public class StockHandler extends BaseHandler {
 	public static DynamicHtml<BodyModel> view = DynamicHtml.view(StockHandler::body);
 
 	static void body(DynamicHtml<BodyModel> view, BodyModel model) {
-		final var stock = Database.stock.getItems();
+		final HashMap<Integer, StockItem> stock = new HashMap<Integer, StockItem>();
+		final HashMap<Integer, StockItem> search = Database.stock.getItems();
+
+		final String inStock = model.getQuery(FILTER_ONLY_IN_STOCK);
+		if (inStock != null) {
+			for (Integer i: search.keySet()) {
+				var item = search.get(i);
+				if (!item.sold) stock.put(i, item);
+			}
+		}
+		stock.putAll(search);
 
 		view
 			.div()
 				.a().attrClass(CSS.BUTTON).attrHref(AddStockHandler.PATH).text("Add New Stock Item").__()
+				.a().attrClass(CSS.BUTTON)
+					.attrHref(AddStockHandler.PATH + "?" + FILTER_ONLY_IN_STOCK + "=" + BodyModel.QUERY_ON).text("In Stock only").__()
 				.table().dynamic(table -> {
 					table
 						.tr()
@@ -44,7 +58,7 @@ public class StockHandler extends BaseHandler {
 							.th().text("Price").__()
 							.th().text("Import Fee").__()
 							.th().text("Received Date").__()
-							.th().text("Item IDs").__()
+							.th().text("Postage Cost").__()
 							.th().text("Action").__()
 						.__()
 						.tr().of(tr -> {
@@ -63,8 +77,10 @@ public class StockHandler extends BaseHandler {
 										.td().text(HTMLEntity.POUND + item.getImportFeeStr()).__()
 										.td().text(item.getReceivedDateStr()).__()
 										.td().of(td -> {
-											for (String i: item.getItemIDs()) {
-												td.a().text(i).__().br().__();
+											for (String i: item.getitemIDsPostageMap().keySet()) {
+												var cost = item.getitemIDsPostageMap().get(i);
+												td.a().attrHref(SalesHandler.PATH + "?" + SalesHandler.FILTER_ID + "=" + i)
+													.text(i + " [" + HTMLEntity.POUND + cost + "]").__().br().__();
 											}
 										}).__()
 										.td()

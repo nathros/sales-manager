@@ -1,7 +1,7 @@
 package sales.manager.common.stock;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import sales.manager.web.handlers.templates.models.BodyModel;
@@ -13,7 +13,7 @@ public class StockItem {
 	public Double importFee;
 	public LocalDate purchaseDate;
 	public LocalDate receivedDate;
-	public List<String> itemIDs;
+	public HashMap<String, Double> itemIDsPostageMap; // item-ID to postage cost
 	public Boolean sold;
 
 	public StockItem() {}
@@ -25,7 +25,8 @@ public class StockItem {
 		String importFee,
 		String purchaseDate,
 		String receivedDate,
-		String itemIDs,
+		List<String> itemIDs,
+		List<String> postage,
 		String sold) throws Exception
 	{
 		if ((itemName == null) | itemName.equals("")) throw new Exception("Item name is empty");
@@ -33,12 +34,13 @@ public class StockItem {
 		if ((price == null) |price.equals("")) throw new Exception("Purchase price is empty");
 		if ((importFee == null) | importFee.equals("")) throw new Exception("Tax price is empty");
 		if ((purchaseDate == null) | purchaseDate.equals("")) throw new Exception("Purchase date is empty");
-		if (itemIDs == null) throw new Exception("Stock item ID list is empty");
-		else {
-			String[] split = itemIDs.split(",");
-			this.itemIDs = new ArrayList<String>();
-			for (String i: split) {
-				if (!i.equals("")) this.itemIDs.add(i.trim());
+		if (itemIDs == null) {
+			this.itemIDsPostageMap = new HashMap<String, Double>();
+		} else {
+			if (itemIDs.size() != postage.size()) new Exception("Item ID and postage count mismatch");
+			this.itemIDsPostageMap = new HashMap<String, Double>();
+			for (int i = 0; i < itemIDs.size(); i++) {
+				this.itemIDsPostageMap.put(itemIDs.get(i), Double.valueOf(postage.get(i)));
 			}
 		}
 		if (sold == null) throw new Exception("Sold state is empty");
@@ -61,7 +63,7 @@ public class StockItem {
 		this.importFee = item.importFee;
 		this.purchaseDate = item.purchaseDate;
 		this.receivedDate = item.receivedDate;
-		this.itemIDs = item.itemIDs;
+		this.itemIDsPostageMap = item.itemIDsPostageMap;
 		this.sold = item.sold;
 	}
 
@@ -91,16 +93,16 @@ public class StockItem {
 	}
 
 	public String getItemIDsStr() {
-		if (itemIDs == null) return "";
+		if (itemIDsPostageMap == null) return "";
 		StringBuilder sb = new StringBuilder();
-		for (String i: itemIDs) {
+		/*for (String i: itemIDs) {
 			sb.append(i);
 			sb.append(",");
-		}
+		}*/
 		return sb.toString();
 	}
 
-	public List<String> getItemIDs() {
-		return itemIDs;
+	public HashMap<String, Double> getitemIDsPostageMap() {
+		return itemIDsPostageMap;
 	}
 }
