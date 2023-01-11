@@ -233,11 +233,12 @@ public class AddStockHandler extends BaseHandler {
 						.label().attrStyle("display:inline-block;width:150px").text("Sale Item IDs:").__()
 						.div().attrStyle("display:inline-block").attrId("list-container")
 						.of(o -> {
-							o
-								.button().attrType(EnumTypeButtonType.BUTTON).attrOnclick("AddSaleRow()").text("+").__()
+							o.div().attrStyle("padding-bottom:2px")
+								.button().attrStyle("float:right").attrType(EnumTypeButtonType.BUTTON).attrOnclick("AddSaleRow()").text("+").__()
 								.label().attrStyle("float:left").text("Item ID").__()
-								.label().attrStyle("float:right").text("Postage Cost").__()
-								.br().__();
+								.label().attrStyle("float:right;padding-right:5px").text("Postage Cost").__()
+							.__()
+							.br().__();
 
 							if (displayItemIDsD != null && displayItemIDsD.size() > 0) {
 								for (int count = 0; count < displayItemIDsD.size(); count++) {

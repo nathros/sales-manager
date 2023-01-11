@@ -87,7 +87,8 @@ public class StockDatabase {
 								HashMap<String, Double> map = new HashMap<String, Double>();
 								for (String i: split) {
 									String mapKV[] = i.split("=");
-									map.put(mapKV[0], Double.valueOf(mapKV[1]));
+									if (mapKV.length > 1)
+										map.put(mapKV[0], Double.valueOf(mapKV[1]));
 								}
 								field.set(newItem, map);
 							} else if (type == List.class) {

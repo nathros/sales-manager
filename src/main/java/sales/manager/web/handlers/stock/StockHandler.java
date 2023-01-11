@@ -39,14 +39,16 @@ public class StockHandler extends BaseHandler {
 				var item = search.get(i);
 				if (!item.sold) stock.put(i, item);
 			}
+		} else {
+			stock.putAll(search);
 		}
-		stock.putAll(search);
 
 		view
 			.div()
 				.a().attrClass(CSS.BUTTON).attrHref(AddStockHandler.PATH).text("Add New Stock Item").__()
-				.a().attrClass(CSS.BUTTON)
-					.attrHref(AddStockHandler.PATH + "?" + FILTER_ONLY_IN_STOCK + "=" + BodyModel.QUERY_ON).text("In Stock only").__()
+				.a().attrClass(CSS.BUTTON + (inStock != null ? CSS.BACKGROUND_ACTIVE : ""))
+					.attrHref(StockHandler.PATH + "?" + FILTER_ONLY_IN_STOCK + "=" + BodyModel.QUERY_ON).text("In Stock only").__()
+				.a().attrClass(CSS.BUTTON).attrHref(StockHandler.PATH).text("Clear Filter").__()
 				.table().dynamic(table -> {
 					table
 						.tr()

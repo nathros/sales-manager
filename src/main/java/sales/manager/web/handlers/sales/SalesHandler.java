@@ -28,7 +28,7 @@ public class SalesHandler extends BaseHandler {
 	public static DynamicHtml<BodyModel> view = DynamicHtml.view(SalesHandler::body);
 
 	static void body(DynamicHtml<BodyModel> view, BodyModel model) {
-		//Database.sales.readDatabase();
+		Database.sales.readDatabase();
 		final HashMap<String, TransactionGroup> current = Database.sales.getSales();
 		final String idQ = model.getQuery(FILTER_ID);
 
