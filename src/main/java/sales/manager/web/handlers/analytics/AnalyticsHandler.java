@@ -13,6 +13,7 @@ import sales.manager.web.handlers.templates.TemplatePage.SelectedPage;
 import sales.manager.web.handlers.templates.TemplatePage.TemplatePageModel;
 import sales.manager.web.handlers.templates.models.BodyModel;
 import sales.manager.web.handlers.templates.models.TemplateHeadModel;
+import sales.manager.web.resource.Asset;
 
 public class AnalyticsHandler extends BaseHandler {
 	public static final String PATH = "/analytics";
@@ -25,7 +26,7 @@ public class AnalyticsHandler extends BaseHandler {
 		final long totalMemory = runtime.totalMemory();
 		final long freeMemory = runtime.freeMemory();
 
-		final int maxMemoryMB = 200;//(int) (maxMemory / 1024 / 1024);
+		final int maxMemoryMB = (int) (maxMemory / 1024 / 1024);
 		final int allocatedMB = (int) (totalMemory / 1024 / 1024);
 		final int usedMemMB = (int) ((totalMemory - freeMemory) / 1024 / 1024);
 
@@ -38,6 +39,7 @@ public class AnalyticsHandler extends BaseHandler {
 				.p().text("JVM used memory: " + usedMemMB + "MB").__()
 				.p().text("percent used: " + p + "%").__()
 				.div().attrClass("pie animate no-round").attrStyle("--p:" + p + ";--c:orange;").text(p + "%").__()
+				.div().attrClass("pie animate").attrStyle("--p:66;--c:red;").text("66%-test").__()
 			.__(); // div
 
 	}
@@ -46,6 +48,7 @@ public class AnalyticsHandler extends BaseHandler {
 	public void requestHandle(HttpExchange he) throws IOException {
 		try {
 			TemplateHeadModel thm = TemplateHeadModel.of("Analytics");
+			thm.AddCSS(Asset.CSS_PIE);
 			TemplatePageModel tepm = TemplatePageModel.of(view, thm, SelectedPage.Analytics, BodyModel.of(he, null));
 			String response = TemplatePage.view.render(tepm);
 
