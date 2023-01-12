@@ -32,6 +32,7 @@ public class AddStockHandler extends BaseHandler {
 	public final static String EDIT_DEL = "del";
 
 	public final static String ID = "id";
+	public final static String ID_SET = "idset";
 	private final static String NAME = "name";
 	private final static String SUPPLIER = "supplier";
 	private final static String PRICE = "price";
@@ -61,7 +62,9 @@ public class AddStockHandler extends BaseHandler {
 		final List<String> itemIDsQ = model.getQueryArray(ITEMIDS);
 		final List<String> postageQ = model.getQueryArray(POSTAGE);
 		final String soldQ = model.getQueryNoNull(SOLD);
+		final String idSetQ = model.getQuery(ID_SET);
 
+		if (idSetQ != null) Database.stock.setStockIDCount(Integer.valueOf(idQ));
 		String tmpErrorMsg = null;
 		String tmpSuccessMsg = null;
 		final StockItem editItem = Database.stock.findByID(idQ);
@@ -168,7 +171,7 @@ public class AddStockHandler extends BaseHandler {
 				}
 				return list;
 		    }
-		    return itemIDsQ;
+		    return postageQ;
 		};
 
 		final String error = tmpErrorMsg == null ? "" : tmpErrorMsg;
@@ -197,6 +200,8 @@ public class AddStockHandler extends BaseHandler {
 					div.form()
 						.label().attrStyle("display:inline-block;width:150px").text("ID:").__()
 						.input().attrType(EnumTypeInputType.TEXT).attrName(ID).attrValue(currentID).__()
+						.input().attrType(EnumTypeInputType.CHECKBOX).attrId(ID_SET).attrName(ID_SET).__()
+						.label().attrFor(ID_SET).text("Set ID to this value").__()
 						.br().__()
 
 						.label().attrStyle("display:inline-block;width:150px").text("Name:").__()
@@ -246,7 +251,7 @@ public class AddStockHandler extends BaseHandler {
 									String cost = postageD.get(count);
 									o.div().attrId("list-" + count);
 										o.input().attrType(EnumTypeInputType.TEXT).attrName(ITEMIDS).attrValue(id).__();
-										o.input().attrType(EnumTypeInputType.TEXT).attrName(POSTAGE).attrValue(String.valueOf(cost)).__();
+										o.input().attrType(EnumTypeInputType.NUMBER).attrStep("0.01").attrName(POSTAGE).attrValue(String.valueOf(cost)).__();
 										if (count == 0) o.button().attrType(EnumTypeButtonType.BUTTON).attrOnclick("removeSaleRow(this)").attrDisabled(true).text("X").__();
 										else o.button().attrType(EnumTypeButtonType.BUTTON).attrOnclick("removeSaleRow(this)").text("X").__();
 										o.br().__();
@@ -255,8 +260,7 @@ public class AddStockHandler extends BaseHandler {
 							} else {
 								o.div().attrId("list-0");
 									o.input().attrType(EnumTypeInputType.TEXT).attrName(ITEMIDS).attrValue("").__();
-									o.input().attrType(EnumTypeInputType.TEXT).attrName(POSTAGE).attrValue("").__();
-									//o.button().attrType(EnumTypeButtonType.BUTTON).attrOnclick("AddSaleRow()").text("+").__();
+									o.input().attrType(EnumTypeInputType.NUMBER).attrStep("0.01").attrName(POSTAGE).attrValue("").__();
 									o.button().attrType(EnumTypeButtonType.BUTTON).attrOnclick("removeSaleRow(this)").attrDisabled(true).text("X").__();
 								o.__();
 							}

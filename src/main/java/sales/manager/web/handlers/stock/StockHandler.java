@@ -3,6 +3,7 @@ package sales.manager.web.handlers.stock;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 import org.xmlet.htmlapifaster.EnumTypeInputType;
 
@@ -43,12 +44,19 @@ public class StockHandler extends BaseHandler {
 			stock.putAll(search);
 		}
 
+		Supplier<Boolean> noFilter = () -> {
+			if (inStock == null) return true;
+			else return false;
+		};
+
+		final Boolean noFilterD = noFilter.get();
+
 		view
 			.div()
 				.a().attrClass(CSS.BUTTON).attrHref(AddStockHandler.PATH).text("Add New Stock Item").__()
 				.a().attrClass(CSS.BUTTON + (inStock != null ? CSS.BACKGROUND_ACTIVE : ""))
 					.attrHref(StockHandler.PATH + "?" + FILTER_ONLY_IN_STOCK + "=" + BodyModel.QUERY_ON).text("In Stock only").__()
-				.a().attrClass(CSS.BUTTON).attrHref(StockHandler.PATH).text("Clear Filter").__()
+				.a().attrClass(CSS.BUTTON + (noFilterD ? CSS.BACKGROUND_ACTIVE : "")).attrHref(StockHandler.PATH).text("Clear Filter").__()
 				.table().dynamic(table -> {
 					table
 						.tr()

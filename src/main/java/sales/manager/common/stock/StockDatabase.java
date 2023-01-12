@@ -31,6 +31,9 @@ public class StockDatabase {
 			Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Main.stockPath), StandardCharsets.UTF_8));
 		    out.write(json);
 		    out.close();
+		    out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Main.stockPath + ".index"), StandardCharsets.UTF_8));
+		    out.write(String.valueOf(stockIDCount));
+		    out.close();
 			Log.l.info("Successfully written stock database: " + stockList.size() + " records, " + stockIDCount + " max id");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -45,6 +48,9 @@ public class StockDatabase {
 			var bytes = Files.readAllBytes(Paths.get(Main.stockPath));
 			String json = new String(bytes, StandardCharsets.UTF_8);
 			stockList = Database.mapper.readValue(json, new TypeReference<HashMap<Integer, StockItem>>(){});
+			bytes = Files.readAllBytes(Paths.get(Main.stockPath + ".index"));
+			String index = new String(bytes, StandardCharsets.UTF_8).replaceAll("[\\r\\n]+", "");
+			stockIDCount = Integer.valueOf(index);
 		    Log.l.info("Successfully read stock database: " + stockList.size() + " records, " + stockIDCount + " max id");
 		} else {
 			Log.l.info("Stock database does not exist");
@@ -93,6 +99,11 @@ public class StockDatabase {
 	public int getStockIDCount() {
 		return stockIDCount;
 	}
+
+	public void setStockIDCount(int id) {
+		stockIDCount = id;
+	}
+
 
 	public StockItem findByID(Integer id) {
 		return stockList.get(id);
