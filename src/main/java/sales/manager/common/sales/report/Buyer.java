@@ -1,27 +1,37 @@
 package sales.manager.common.sales.report;
 
-import java.util.Objects;
 import java.util.zip.CRC32;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import sales.manager.common.sales.report.event.HashProvider;
 
-public record Buyer(
-	String username,
-	String name,
-	String addressCity,
-	String addressRegion,
-	String addressPostcode,
-	String addressCountry,
-	long hash) implements HashProvider {
+public class Buyer extends HashProvider {
+	String username;
+	String name;
+	String addressCity;
+	String addressRegion;
+	String addressPostcode;
+	String addressCountry;
+	long hash;
 
-	public Buyer {
-		Objects.requireNonNull(username);
-		Objects.requireNonNull(name);
-		Objects.requireNonNull(addressCity);
-		Objects.requireNonNull(addressRegion);
-		Objects.requireNonNull(addressPostcode);
-		Objects.requireNonNull(addressCountry);
-		Objects.requireNonNull(hash);
+	public Buyer() {}
+
+	public Buyer(
+		String username,
+		String name,
+		String addressCity,
+		String addressRegion,
+		String addressPostcode,
+		String addressCountry,
+		long hash) {
+		this.username = username;
+		this.name = name;
+		this.addressCity = addressCity;
+		this.addressRegion = addressRegion;
+		this.addressPostcode = addressPostcode;
+		this.addressCountry = addressCountry;
+		this.hash = hash;
 	}
 
 	public static Buyer of(
@@ -44,11 +54,13 @@ public record Buyer(
 	}
 
 	@Override
+	@JsonIgnore
 	public long getHashCode() {
 		return hash;
 	}
 
 	@Override
+	@JsonIgnore
 	public String getItemID() {
 		return "";
 	}

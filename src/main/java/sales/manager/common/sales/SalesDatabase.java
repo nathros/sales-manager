@@ -3,6 +3,9 @@ package sales.manager.common.sales;
 import java.util.HashMap;
 import java.util.List;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import sales.manager.common.sales.report.Record;
 import sales.manager.common.sales.report.ReportParser;
 import sales.manager.common.sales.report.TransactionGroup;
@@ -31,6 +34,19 @@ public class SalesDatabase {
 
 			sales = new HashMap<String, TransactionGroup>();
 			addToDatabase(list);
+
+
+
+
+			ObjectMapper mapper = new ObjectMapper();
+			mapper = mapper.findAndRegisterModules();
+			var a = mapper.writeValueAsString(sales);
+
+			HashMap<String, TransactionGroup> map
+			  = mapper.readValue(a, new TypeReference<HashMap<String, TransactionGroup>>(){});
+
+			map.size();
+			sales = map;
 
 		} catch (Exception e) {
 			e.printStackTrace();

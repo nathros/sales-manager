@@ -77,14 +77,14 @@ public class SalesHandler extends BaseHandler {
 													switch (rec.getEventType()) {
 													case Order: {
 														Order data = (Order) rec.getData();
-														tr.td().text(data.grossTransaction()).__();
-														gross.add(data.grossTransaction());
+														tr.td().text(data.grossTransaction).__();
+														gross.add(data.grossTransaction);
 														break;
 													}
 													case Postagelabel: {
 														PostageLabel data = (PostageLabel) rec.getData();
-														tr.td().text(data.grossTransaction()).__();
-														gross.add(data.grossTransaction());
+														tr.td().text(data.grossTransaction).__();
+														gross.add(data.grossTransaction);
 													}
 													default:
 														break;

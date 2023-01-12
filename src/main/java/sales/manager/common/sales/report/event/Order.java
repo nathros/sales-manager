@@ -2,27 +2,66 @@ package sales.manager.common.sales.report.event;
 
 import java.util.zip.CRC32;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import sales.manager.common.Util;
 import sales.manager.common.sales.report.Buyer;
 import sales.manager.common.sales.report.Record;
 
-public record Order(
-	Buyer buyer,
-	double netAmount,			// 10
-	String itemID,				// 17
-	String transactionID,		// 18
-	String itemTitle,			// 19
-	int quantity,				// 21
-	double itemSubtotal,		// 22
-	double postageCost, 		// 23
-	double collectedTax,		// 24
-	double fixedFee,			// 27
-	double valueFee,			// 28
-	double highNADFee,			// 29
-	double belowStandardFee,	// 30
-	double internationalFee,	// 31
-	double grossTransaction,	// 32
-	long hash) implements HashProvider {
+public class Order extends HashProvider {
+	public Buyer buyer;
+	public double netAmount;			// 10
+	public String itemID;				// 17
+	public String transactionID;		// 18
+	public String itemTitle;			// 19
+	public int quantity;				// 21
+	public double itemSubtotal;		// 22
+	public double postageCost; 		// 23
+	public double collectedTax;		// 24
+	public double fixedFee;			// 27
+	public double valueFee;			// 28
+	public double highNADFee;			// 29
+	public double belowStandardFee;	// 30
+	public double internationalFee;	// 31
+	public double grossTransaction;	// 32
+	public long hash;
+
+	public Order() {}
+
+	public Order(
+		Buyer buyer,
+		double netAmount,			// 10
+		String itemID,				// 17
+		String transactionID,		// 18
+		String itemTitle,			// 19
+		int quantity,				// 21
+		double itemSubtotal,		// 22
+		double postageCost, 		// 23
+		double collectedTax,		// 24
+		double fixedFee,			// 27
+		double valueFee,			// 28
+		double highNADFee,			// 29
+		double belowStandardFee,	// 30
+		double internationalFee,	// 31
+		double grossTransaction,	// 32
+		long hash ) {
+		this.buyer = buyer;
+		this.netAmount = netAmount;					// 10
+		this.itemID = itemID;						// 17
+		this.transactionID = transactionID;			// 18
+		this.itemTitle = itemTitle;					// 19
+		this.quantity = quantity;					// 21
+		this.itemSubtotal = itemSubtotal;			// 22
+		this.postageCost = postageCost; 			// 23
+		this.collectedTax = collectedTax;			// 24
+		this.fixedFee = fixedFee;					// 27
+		this.valueFee = valueFee;					// 28
+		this.highNADFee = highNADFee;				// 29
+		this.belowStandardFee = belowStandardFee;	// 30
+		this.internationalFee = internationalFee;	// 31
+		this.grossTransaction = grossTransaction;	// 32
+		this.hash = hash;
+	}
 
 	public static Order of(Buyer buyer,
 		double netAmount,
@@ -40,7 +79,7 @@ public record Order(
 		double internationalFee,
 		double grossTransaction) {
 		CRC32 crc = new CRC32();
-		crc.update(Util.longToBytes(buyer.hash()));
+		crc.update(Util.longToBytes(buyer.getHashCode()));
 		crc.update(itemID.getBytes());
 		crc.update(transactionID.getBytes());
 		crc.update(itemTitle.getBytes());
@@ -105,11 +144,13 @@ public record Order(
 	}
 
 	@Override
+	@JsonIgnore
 	public long getHashCode() {
 		return hash;
 	}
 
 	@Override
+	@JsonIgnore
 	public String getItemID() {
 		return itemID;
 	}

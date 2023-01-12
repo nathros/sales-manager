@@ -152,7 +152,7 @@ public class AddStockHandler extends BaseHandler {
 		Supplier<List<String>> displayItemIDs = () -> {
 			if (editItem != null) {
 				List<String> list = new ArrayList<String>();
-				list.addAll(editItem.getitemIDsPostageMap().keySet());
+				list.addAll(editItem.getItemIDsPostageMap().keySet());
 				return list;
 		    }
 		    return itemIDsQ;
@@ -161,7 +161,7 @@ public class AddStockHandler extends BaseHandler {
 		Supplier<List<String>> displayPostages = () -> {
 			if (editItem != null) {
 				List<Double> tmp = new ArrayList<Double>();
-				tmp.addAll(editItem.getitemIDsPostageMap().values());
+				tmp.addAll(editItem.getItemIDsPostageMap().values());
 				List<String> list = new ArrayList<String>();
 				for (Double cost: tmp) {
 					list.add(String.format("%.2f", cost));

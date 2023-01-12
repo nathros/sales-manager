@@ -2,13 +2,26 @@ package sales.manager.common.sales.report.event;
 
 import java.util.zip.CRC32;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import sales.manager.common.Util;
 import sales.manager.common.sales.report.Record;
 
-public record PostageLabel(
-	String itemID,				// 17
-	double grossTransaction,	// 32
-	long hash) implements HashProvider {
+public class PostageLabel extends HashProvider {
+	public String itemID;				// 17
+	public double grossTransaction;		// 32
+	public long hash;
+
+	public PostageLabel() {}
+
+	public PostageLabel(
+		String itemID,				// 17
+		double grossTransaction,	// 32
+		long hash) {
+		this.itemID = itemID;						// 17
+		this.grossTransaction = grossTransaction;	// 32
+		this.hash = hash;
+	}
 
 	public static PostageLabel of(
 		String itemID,
@@ -33,11 +46,13 @@ public record PostageLabel(
 	}
 
 	@Override
+	@JsonIgnore
 	public long getHashCode() {
 		return hash;
 	}
 
 	@Override
+	@JsonIgnore
 	public String getItemID() {
 		return itemID;
 	}

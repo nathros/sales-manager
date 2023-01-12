@@ -5,12 +5,14 @@ import java.util.List;
 
 public class TransactionGroup {
 	private List<Record> transactions = new ArrayList<Record>();
-	private String StockID;
+	private String stockID;
 	private String itemID;
+
+	public TransactionGroup() {}
 
 	public TransactionGroup(String itemID) {
 		this.itemID = itemID;
-		StockID = "";
+		stockID = "";
 	}
 
 	public boolean addRecord(Record record) {
@@ -23,7 +25,11 @@ public class TransactionGroup {
 	}
 
 	public String getStockID() {
-		return StockID;
+		return stockID;
+	}
+
+	public void setStockID(String id) {
+		stockID = id;
 	}
 
 	public List<Record> getTransactions() {

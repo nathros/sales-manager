@@ -6,6 +6,8 @@ import java.time.temporal.ChronoField;
 import java.util.Locale;
 import java.util.zip.CRC32;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import sales.manager.common.Util;
 import sales.manager.common.sales.report.event.Event;
 import sales.manager.common.sales.report.event.HashProvider;
@@ -17,19 +19,21 @@ public class Record {
 	private LocalDate date;
 	private Event eventType;
 	private String orderNumber;
-	private Object data;
+	private HashProvider data;
 	private long hash;
 
 	private static DateTimeFormatter dateParser = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH);
 	public static final String EMPTY = "--";
 
-	public Record(LocalDate date, Event eventType, String orderNumber, Object data) throws Exception {
+	public Record() {}
+
+	public Record(LocalDate date, Event eventType, String orderNumber, HashProvider data) throws Exception {
 		this.setDate(date);
 		this.setEventType(eventType);
 		this.setOrderNumber(orderNumber);
 		this.setData(data);
 		CRC32 crc = new CRC32();
-		HashProvider hp = (HashProvider)data;
+		HashProvider hp = data;
 		crc.update(Util.longToBytes(date.getLong(ChronoField.EPOCH_DAY)));
 		crc.update(eventType.name().getBytes());
 		crc.update(orderNumber.getBytes());
@@ -41,7 +45,7 @@ public class Record {
 		String[] sep = csvRow.split("\",\"");
 		LocalDate date = LocalDate.parse(sep[0].substring(1), dateParser);
 		Event event = Event.valueOf(sep[1].replace(" ", ""));
-		Object data;
+		HashProvider data;
 
 		switch (event) {
 			case Order:
@@ -87,11 +91,11 @@ public class Record {
 		this.orderNumber = orderNumber;
 	}
 
-	public Object getData() {
+	public HashProvider getData() {
 		return data;
 	}
 
-	public void setData(Object data) {
+	public void setData(HashProvider data) {
 		this.data = data;
 	}
 
@@ -99,8 +103,9 @@ public class Record {
 		return hash;
 	}
 
+	@JsonIgnore
 	public String getItemID() {
-		HashProvider provider = (HashProvider)data;
+		HashProvider provider = data;
 		return provider.getItemID();
 	}
 }

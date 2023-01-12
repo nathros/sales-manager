@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import sales.manager.web.handlers.templates.models.BodyModel;
 
 public class StockItem {
@@ -67,31 +69,38 @@ public class StockItem {
 		this.sold = item.sold;
 	}
 
+	@JsonIgnore
 	public String getItemNameStr() {
 		return itemName;
 	}
 
+	@JsonIgnore
 	public String getSupplierStr() {
 		return supplier;
 	}
 
+	@JsonIgnore
 	public String getPriceStr() {
 		return String.format("%.2f", price);
 	}
 
+	@JsonIgnore
 	public String getImportFeeStr() {
 		return String.format("%.2f", importFee);
 	}
 
+	@JsonIgnore
 	public String getPurchaseDateStr() {
 		return purchaseDate.toString();
 	}
 
+	@JsonIgnore
 	public String getReceivedDateStr() {
 		if (receivedDate == null) return "";
 		return receivedDate.toString();
 	}
 
+	@JsonIgnore
 	public String getItemIDsStr() {
 		if (itemIDsPostageMap == null) return "";
 		StringBuilder sb = new StringBuilder();
@@ -102,7 +111,7 @@ public class StockItem {
 		return sb.toString();
 	}
 
-	public HashMap<String, Double> getitemIDsPostageMap() {
+	public HashMap<String, Double> getItemIDsPostageMap() {
 		return itemIDsPostageMap;
 	}
 }

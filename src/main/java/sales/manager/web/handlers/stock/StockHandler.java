@@ -79,8 +79,8 @@ public class StockHandler extends BaseHandler {
 										.td().text(HTMLEntity.POUND + item.getImportFeeStr()).__()
 										.td().text(item.getReceivedDateStr()).__()
 										.td().of(td -> {
-											for (String i: item.getitemIDsPostageMap().keySet()) {
-												var cost = item.getitemIDsPostageMap().get(i);
+											for (String i: item.getItemIDsPostageMap().keySet()) {
+												var cost = item.getItemIDsPostageMap().get(i);
 												td.a().attrHref(SalesHandler.PATH + "?" + SalesHandler.FILTER_ID + "=" + i)
 													.text(i + " [" + HTMLEntity.POUND + cost + "]").__().br().__();
 											}
