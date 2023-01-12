@@ -20,9 +20,24 @@ public class AnalyticsHandler extends BaseHandler {
 	public static DynamicHtml<BodyModel> view = DynamicHtml.view(AnalyticsHandler::body);
 
 	static void body(DynamicHtml<BodyModel> view, BodyModel model) {
+		final Runtime runtime = Runtime.getRuntime();
+		final long maxMemory = runtime.maxMemory();
+		final long totalMemory = runtime.totalMemory();
+		final long freeMemory = runtime.freeMemory();
+
+		final int maxMemoryMB = 200;//(int) (maxMemory / 1024 / 1024);
+		final int allocatedMB = (int) (totalMemory / 1024 / 1024);
+		final int usedMemMB = (int) ((totalMemory - freeMemory) / 1024 / 1024);
+
+		int p = (int) (((double)usedMemMB / (double)maxMemoryMB) * 100);
 		view
 			.div()
 				.p().text("AnalyticsHandler").__()
+				.p().text("JVM max memory: " + maxMemoryMB + "MB").__()
+				.p().text("JVM allocated memory: " + allocatedMB + "MB").__()
+				.p().text("JVM used memory: " + usedMemMB + "MB").__()
+				.p().text("percent used: " + p + "%").__()
+				.div().attrClass("pie animate no-round").attrStyle("--p:" + p + ";--c:orange;").text(p + "%").__()
 			.__(); // div
 
 	}
@@ -30,7 +45,7 @@ public class AnalyticsHandler extends BaseHandler {
 	@Override
 	public void requestHandle(HttpExchange he) throws IOException {
 		try {
-			TemplateHeadModel thm = TemplateHeadModel.of("Files");
+			TemplateHeadModel thm = TemplateHeadModel.of("Analytics");
 			TemplatePageModel tepm = TemplatePageModel.of(view, thm, SelectedPage.Analytics, BodyModel.of(he, null));
 			String response = TemplatePage.view.render(tepm);
 

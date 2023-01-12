@@ -23,35 +23,29 @@ a {
 	background-color: #080c10;
 	z-index: 10;
 }
-
 .header-root-container {
 	width: 100%;
 	height: 100%;
 	display: flex;
 	flex-direction: row-reverse;
 }
-
 .nav-area {
 	background-color: #101820;
 	min-width: 12rem;
 }
-
 .nav-area ul {
 	list-style: none;
 }
-
 .main-content {
 	position: relative;
 	display: flex;
 }
-
 .main-content-wrapper {
 	padding: 0.5rem;
 	flex: 1;
 	height: calc(100vh - 4rem);
 	overflow-y: scroll;
 }
-
 #nav-toggle {
 	display: flex;
 	z-index: 20;
@@ -60,7 +54,6 @@ a {
 	align-items: center;
 	justify-content: center;
 }
-
 #nav-toggle a {
 	text-decoration: none;
 	color: rgba(255, 255, 255, 0.5);
@@ -72,7 +65,6 @@ a {
     height: 100%;
     padding: 0.5rem;
 }
-
 #nav-toggle a:before {
 	content: '';
 	height: 2rem;
@@ -86,59 +78,47 @@ a {
 	opacity: 0.5;
 	background-size: contain;
 }
-
 .icon-folder:before {
 	background-image: url('/assets/img/folder-fill.svg');
 }
-
 .icon-tape:before {
 	background-image: url('/assets/img/favico.svg');
 }
-
 .icon-jobs:before {
 	background-image: url('/assets/img/list-fill.svg');
 }
-
 .icon-admin:before {
 	background-image: url('/assets/img/person-fill.svg');
 }
-
 .icon-sandpit:before {
 	background-image: url('/assets/img/bucket-spade-fill.svg');
 }
-
 .icon-bar-chart:before {
 	background-image: url('/assets/img/bar-chart-fill.svg');
 }
-
 .icon-sales:before {
 	background-image: url('/assets/img/receipt.svg');
 }
-
 .icon-stock:before {
 	background-image: url('/assets/img/box-seam-fill.svg');
 }
-
-#nav-toggle a:hover:before, #nav-toggle a.selected:before  {
+#nav-toggle a:hover:before,
+#nav-toggle a.selected:before  {
 	opacity: 1;
 }
-
 #nav-menu li a.selected {
 	background-color: rgb(0, 119, 161);
 }
-
-#nav-toggle a:hover, #nav-toggle a.selected {
+#nav-toggle a:hover,
+#nav-toggle a.selected {
 	color: rgba(255, 255, 255, 1);
 }
-
 #nav-toggle a:hover {
 	background-color: rgba(255, 255, 255, 0.1);
 }
-
 #nav-toggle a.selected:hover {
 	opacity: 0.75;
 }
-
 #nav-toggle input {
 	display: block;
 	width: 0;
@@ -149,7 +129,6 @@ a {
 	opacity: 0;
 	z-index: 2;
 }
-
 #nav-menu {
 	position: absolute;
 	width: 12rem;
@@ -164,7 +143,6 @@ a {
 	box-sizing: border-box;
 	overflow-x: clip;
 }
-
 .btn {
 	align-items: center;
 	background-clip: padding-box;
@@ -190,48 +168,91 @@ a {
 	vertical-align: baseline;
 	width: auto;
 }
-
 .btn:hover,
 .btn:focus {
 	box-shadow: inset 100px 100px 0px 0px rgba(255, 255, 255, 0.3), rgba(0, 0, 0, 0.1) 0 4px 12px;
 }
-
 .btn:hover {
 	transform: translateY(-1px);
 }
-
 .btn:active {
 	background-color: rgb(32, 74, 135);
 	box-shadow: rgba(0, 0, 0, .06) 0 2px 4px;
 	transform: translateY(0);
 }
-
 .background-caution {
 	background-color: darkorange;
 }
-
 .background-active {
 	background-color: teal;
 }
-
 table {
 	border-collapse: collapse;
 	width: 100%;
 }
-
-table td, table th {
+table td,
+table th {
 	border: 1px solid #ddd;
 	padding: 8px;
 }
-
-table tr:nth-child(even){background-color: #f2f2f2;}
-
-table tr:hover {background-color: #ddd;}
-
+table tr:nth-child(even) { background-color: #f2f2f2; }
+table tr:hover { background-color: #ddd; }
 table th {
 	padding-top: 12px;
 	padding-bottom: 12px;
 	text-align: left;
 	background-color: #04AA6D;
 	color: white;
+}
+
+/* --- Simple Pie Chart -- */
+@property --p {
+	syntax: '<number>';
+	inherits: true;
+	initial-value: 0;
+}
+.pie {
+	--p: 20;
+	--b: 22px;
+	--c: darkred;
+	--w: 150px;
+	width: var(--w);
+	aspect-ratio: 1;
+	position: relative;
+	display: inline-grid;
+	margin: 5px;
+	place-content: center;
+	font-size: 25px;
+	font-weight: bold;
+}
+.pie:before,
+.pie:after {
+	content: "";
+	position: absolute;
+	border-radius: 50%;
+}
+.pie:before {
+	inset:0;
+	background:
+		radial-gradient(farthest-side,var(--c) 98%,#0000) top/var(--b) var(--b) no-repeat,
+		conic-gradient(var(--c) calc(var(--p)*1%),#0000 0);
+	-webkit-mask: radial-gradient(farthest-side,#0000 calc(99% - var(--b)),#000 calc(100% - var(--b)));
+	mask: radial-gradient(farthest-side,#0000 calc(99% - var(--b)),#000 calc(100% - var(--b)));
+}
+.pie:after {
+	inset: calc(50% - var(--b)/2);
+	background: var(--c);
+	transform: rotate(calc(var(--p)*3.6deg)) translateY(calc(50% - var(--w)/2));
+}
+.pie.animate {
+	animation: p 1s .5s both;
+}
+.pie.no-round:before {
+	background-size: 0 0, auto;
+}
+.pie.no-round:after {
+	content: none;
+}
+@keyframes p {
+	from{--p: 0}
 }
