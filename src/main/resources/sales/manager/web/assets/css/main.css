@@ -42,13 +42,14 @@ a {
 
 .main-content {
 	position: relative;
-	overflow-x: hidden;
 	display: flex;
-	height: 200rem;
 }
 
 .main-content-wrapper {
 	padding: 0.5rem;
+	flex: 1;
+	height: calc(100vh - 4rem);
+	overflow-y: scroll;
 }
 
 #nav-toggle {
