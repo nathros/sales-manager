@@ -101,7 +101,7 @@ public class SalesHandler extends BaseHandler {
 								}).__()
 							.__();
 					}
-				})
+				}).__()
 			.__(); // div
 
 	}
@@ -109,7 +109,7 @@ public class SalesHandler extends BaseHandler {
 	@Override
 	public void requestHandle(HttpExchange he) throws Exception {
 		try {
-			TemplateHeadModel thm = TemplateHeadModel.of("Files");
+			TemplateHeadModel thm = TemplateHeadModel.of("Sales");
 			TemplatePageModel tepm = TemplatePageModel.of(view, thm, SelectedPage.Sales, BodyModel.of(he, null));
 			String response = TemplatePage.view.render(tepm);
 

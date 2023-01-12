@@ -66,41 +66,39 @@ public class StockHandler extends BaseHandler {
 						.tr().of(tr -> {
 							for (Integer key: stock.keySet()) {
 								StockItem item = stock.get(key);
-									tr
-										.td().text(key).__()
-										.td().of(td -> {
-											if (item.sold) td.input().attrType(EnumTypeInputType.CHECKBOX).attrChecked(item.sold).attrDisabled(true).__();
-											else td.input().attrType(EnumTypeInputType.CHECKBOX).attrDisabled(true).__();
-										}).__()
-										.td().text(item.getPurchaseDateStr()).__()
-										.td().text(item.getItemNameStr()).__()
-										.td().text(item.getSupplierStr()).__()
-										.td().text(HTMLEntity.POUND + item.getPriceStr()).__()
-										.td().text(HTMLEntity.POUND + item.getImportFeeStr()).__()
-										.td().text(item.getReceivedDateStr()).__()
-										.td().of(td -> {
-											for (String i: item.getItemIDsPostageMap().keySet()) {
-												var cost = item.getItemIDsPostageMap().get(i);
-												td.a().attrHref(SalesHandler.PATH + "?" + SalesHandler.FILTER_ID + "=" + i)
-													.text(i + " [" + HTMLEntity.POUND + cost + "]").__().br().__();
-											}
-										}).__()
-										.td()
-											.a().attrClass(CSS.BUTTON).attrHref(AddStockHandler.PATH + "?" +
-												AddStockHandler.EDIT + "=" + AddStockHandler.EDIT_EDIT + "&" +
-												AddStockHandler.ID + "=" + key)
-												.text("Edit")
-											.__()
-											.a().attrClass(CSS.BUTTON + CSS.BACKGROUND_CAUTION).attrHref(AddStockHandler.PATH + "?" +
-												AddStockHandler.EDIT + "=" + AddStockHandler.EDIT_DEL + "&" +
-												AddStockHandler.ID + "=" + key)
-												.text("Delete")
-											.__()
-										.__() // td
-									.__(); // tr
+								tr.td().text(key).__()
+								.td().of(td -> {
+									if (item.sold) td.input().attrType(EnumTypeInputType.CHECKBOX).attrChecked(item.sold).attrDisabled(true).__();
+									else td.input().attrType(EnumTypeInputType.CHECKBOX).attrDisabled(true).__();
+								}).__()
+								.td().text(item.getPurchaseDateStr()).__()
+								.td().text(item.getItemNameStr()).__()
+								.td().text(item.getSupplierStr()).__()
+								.td().text(HTMLEntity.POUND + item.getPriceStr()).__()
+								.td().text(HTMLEntity.POUND + item.getImportFeeStr()).__()
+								.td().text(item.getReceivedDateStr()).__()
+								.td().of(td -> {
+									for (String i: item.getItemIDsPostageMap().keySet()) {
+										var cost = item.getItemIDsPostageMap().get(i);
+										td.a().attrHref(SalesHandler.PATH + "?" + SalesHandler.FILTER_ID + "=" + i)
+											.text(i + " [" + HTMLEntity.POUND + cost + "]").__().br().__();
+									}
+								}).__()
+								.td()
+									.a().attrClass(CSS.BUTTON).attrHref(AddStockHandler.PATH + "?" +
+										AddStockHandler.EDIT + "=" + AddStockHandler.EDIT_EDIT + "&" +
+										AddStockHandler.ID + "=" + key)
+										.text("Edit")
+									.__()
+									.a().attrClass(CSS.BUTTON + CSS.BACKGROUND_CAUTION).attrHref(AddStockHandler.PATH + "?" +
+										AddStockHandler.EDIT + "=" + AddStockHandler.EDIT_DEL + "&" +
+										AddStockHandler.ID + "=" + key)
+										.text("Delete")
+									.__()
+								.__(); // td
 							}
 						}).__(); // tr
-				})
+				}).__()
 			.__(); // div
 
 	}
@@ -108,7 +106,7 @@ public class StockHandler extends BaseHandler {
 	@Override
 	public void requestHandle(HttpExchange he) throws Exception {
 		try {
-			TemplateHeadModel thm = TemplateHeadModel.of("Files");
+			TemplateHeadModel thm = TemplateHeadModel.of("Stock");
 			TemplatePageModel tepm = TemplatePageModel.of(view, thm, SelectedPage.Stock, BodyModel.of(he, null));
 			String response = TemplatePage.view.render(tepm);
 			he.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length());
