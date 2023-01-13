@@ -14,7 +14,7 @@ public class Main {
 	public static String storePass = null;
 	public static String keyPass = null;
 	public static String dbPath = "config/base.db";
-	public static String dbImportPath = "config/report/";
+	public static String dbImportPath = "config/reports/";
 	public static String stockPath = "config/stock.db";
 
 	public static final String HTTPPORT = "httpport";

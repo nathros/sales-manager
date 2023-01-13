@@ -1,7 +1,9 @@
 package sales.manager.web.handlers.sales;
 
+import java.io.File;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.nio.file.Files;
 
 import org.xmlet.htmlapifaster.EnumEnctypeType;
 import org.xmlet.htmlapifaster.EnumMethodType;
@@ -11,6 +13,7 @@ import org.xmlet.htmlapifaster.EnumTypeInputType;
 import com.sun.net.httpserver.HttpExchange;
 
 import htmlflow.DynamicHtml;
+import sales.manager.web.Main;
 import sales.manager.web.handlers.BaseHandler;
 import sales.manager.web.handlers.templates.TemplatePage;
 import sales.manager.web.handlers.templates.TemplatePage.SelectedPage;
@@ -27,9 +30,28 @@ public class UploadReportHandler extends BaseHandler {
 	public static DynamicHtml<BodyModel> view = DynamicHtml.view(UploadReportHandler::body);
 
 	static void body(DynamicHtml<BodyModel> view, BodyModel model) {
+		String message = "";
+		if (model.isPOSTMethod()) {
+			var filename = model.getPOSTFilename();
+			var post = model.getRawPOSTData();
+			try {
+				var file = new File(Main.dbImportPath + filename);
+				if (file.exists()) {
+					message = "File " + filename + " already exists";
+				} else {
+					Files.write(file.toPath(), post);
+					message = "Success with " + filename;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				message = "ERROR: " + e.getMessage();
+			}
+		}
 
+		final String showMessage = message;
 		view
 			.div()
+				.p().text(showMessage).__()
 				.form().attrEnctype(EnumEnctypeType.MULTIPART_FORM_DATA).attrMethod(EnumMethodType.POST)
 					.input().attrType(EnumTypeInputType.FILE).attrName(FILE).__()
 					.br().__()

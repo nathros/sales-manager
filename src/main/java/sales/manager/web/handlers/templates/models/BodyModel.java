@@ -2,7 +2,9 @@ package sales.manager.web.handlers.templates.models;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,13 +26,90 @@ public class BodyModel {
 
 	public class POSTBody {
 		private final String contentType;
+		private final byte[] payload;
+		private String filename;
+		private String disposition;
+		private String name;
 
-		public POSTBody(final byte[] body) {
+		public POSTBody(final byte[] body) throws IOException {
 			contentType = "";
+			int payloadStartIndex = 0;
+			int payloadEndIndex = 0;
+
+			// Find end of first boundary
+			int newLineCount = 0;
+			for (int i = 0; i < body.length; i++) {
+				if (body[i] == 13) {
+					if (body[i + 1] == 10) {
+						newLineCount++;
+						if (newLineCount == 4) {
+							payloadStartIndex = i + 2;
+							break;
+						}
+					}
+				}
+			}
+
+			// Find end of second boundary
+			for (int i = body.length - 2; i > 0; i--) {
+				if (body[i] == 10) {
+					if (body[i - 1] == 13) {
+						payloadEndIndex = i - 2;
+						break;
+					}
+				}
+			}
+
+			if ((payloadStartIndex != 0) && (payloadEndIndex != 0)) {
+				this.payload = Arrays.copyOfRange(body, payloadStartIndex, payloadEndIndex);
+				byte[] boundary = Arrays.copyOfRange(body, 0, payloadStartIndex);
+				String boundaryStr = new String(boundary, StandardCharsets.UTF_8);
+				String[] boundarLines = boundaryStr.split("\r\n");
+
+				int index = boundarLines[1].indexOf(':');
+				if (index > 0) {
+					String[] fields = boundarLines[1].substring(index + 2).split(";");
+					for (String f: fields) {
+						String[] keyValue = f.split("=");
+						if (keyValue[0].trim().equals("filename")) {
+							filename = keyValue[1].substring(1, keyValue[1].length() - 1);
+						} else if (keyValue[0].trim().equals("name")) {
+							name = keyValue[1].substring(1, keyValue[1].length() - 1);
+						} else if (keyValue.length == 1) {
+							disposition = keyValue[0];
+						}
+					}
+				}
+			} else {
+				this.payload = null;
+				this.filename = null;
+				this.disposition = null;
+			}
+
+			// Print entire body
+			/*ByteArrayInputStream stream = new ByteArrayInputStream(body);
+			InputStreamReader streamReader = new InputStreamReader(stream, StandardCharsets.UTF_8);
+			BufferedReader bufferedReader = new BufferedReader(streamReader);
+			String line;
+			while ((line = bufferedReader.readLine()) != null) {
+			    System.out.println(line);
+			}*/
 		}
 
 		public String getContentType() {
 			return contentType;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public byte[] getPayload() {
+			return payload;
+		}
+
+		public String getFilename() {
+			return filename;
 		}
 	}
 
@@ -86,5 +165,26 @@ public class BodyModel {
 
 	public String getPOSTContentType() {
 		return body.getContentType();
+	}
+
+	public String getPOSTType() {
+		if (isPOSTMethod()) {
+			return body.getName();
+		}
+		return null;
+	}
+
+	public byte[] getRawPOSTData() {
+		if (isPOSTMethod()) {
+			return body.getPayload();
+		}
+		return null;
+	}
+
+	public String getPOSTFilename() {
+		if (isPOSTMethod()) {
+			return body.getFilename();
+		}
+		return null;
 	}
 }
