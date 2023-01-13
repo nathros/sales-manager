@@ -6,6 +6,7 @@ import com.sun.net.httpserver.HttpHandler;
 
 import sales.manager.web.handlers.analytics.AnalyticsHandler;
 import sales.manager.web.handlers.sales.SalesHandler;
+import sales.manager.web.handlers.sales.UploadReportHandler;
 import sales.manager.web.handlers.sandpit.ParseTestHandler;
 import sales.manager.web.handlers.sandpit.SandpitHandler;
 import sales.manager.web.handlers.stock.AddStockHandler;
@@ -24,6 +25,7 @@ public class Handlers {
 		ret.put(StockHandler.PATH, new StockHandler());
 		ret.put(AddStockHandler.PATH, new AddStockHandler());
 		ret.put(SalesHandler.PATH, new SalesHandler());
+		ret.put(UploadReportHandler.PATH, new UploadReportHandler());
 
 		ret.put(SandpitHandler.PATH, new SandpitHandler());
 		ret.put(ParseTestHandler.PATH, new ParseTestHandler());

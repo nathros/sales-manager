@@ -19,6 +19,7 @@ import sales.manager.web.handlers.templates.TemplatePage.SelectedPage;
 import sales.manager.web.handlers.templates.TemplatePage.TemplatePageModel;
 import sales.manager.web.handlers.templates.models.BodyModel;
 import sales.manager.web.handlers.templates.models.TemplateHeadModel;
+import sales.manager.web.resource.CSS;
 
 public class SalesHandler extends BaseHandler {
 	public static final String PATH = "/sales";
@@ -43,6 +44,7 @@ public class SalesHandler extends BaseHandler {
 		}
 		view
 			.div()
+				.a().attrClass(CSS.BUTTON).attrHref(UploadReportHandler.PATH).text("Upload New Report").__()
 				.table().dynamic(table -> {
 					table
 						.tr()

@@ -1,5 +1,7 @@
 package sales.manager.web.handlers.templates.models;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,19 +16,36 @@ public class BodyModel {
 	private final HttpExchange he;
 	private final Object model;
 	private final Map<String, Object> queries;
+	private final String method;
+	private final POSTBody body;
 
 	public static final String QUERY_ON = "on";
 	public static final String QUERY_OFF = "off";
 
-	private BodyModel(HttpExchange he, Object model) {
+	public class POSTBody {
+		private final String contentType;
+
+		public POSTBody(final byte[] body) {
+			contentType = "";
+		}
+
+		public String getContentType() {
+			return contentType;
+		}
+	}
+
+	private BodyModel(HttpExchange he, Object model) throws IOException {
 		this.he = he;
 		this.model = model;
 		queries = new HashMap<String, Object>();
 		String query = he.getRequestURI().getRawQuery();
 		BaseHandler.parseQuery(query, queries);
+		method = he.getRequestMethod();
+		InputStream post = he.getRequestBody();
+		body = new POSTBody(post.readAllBytes());
 	}
 
-	public static BodyModel of(HttpExchange he, Object model) {
+	public static BodyModel of(HttpExchange he, Object model) throws IOException {
 		return new BodyModel(he, model);
 	}
 
@@ -55,5 +74,17 @@ public class BodyModel {
 	public boolean hasQuery() {
 		String q = he.getRequestURI().getRawQuery();
 		return q != null;
+	}
+
+	public boolean isGETMethod() {
+		return method.equals("GET");
+	}
+
+	public boolean isPOSTMethod() {
+		return method.equals("POST");
+	}
+
+	public String getPOSTContentType() {
+		return body.getContentType();
 	}
 }
